@@ -31,7 +31,7 @@ addBtn.addEventListener("click", async function (e) {
     images: form.images.value,
   };
 
-  const response = await fetch("http://localhost:3000/api/product", {
+  const response = await fetch("https://fabribuzz.onrender.com/api/product", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
