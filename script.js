@@ -283,21 +283,6 @@ async function fetchDashboardData() {
   `;
 }
 
-// // Populate category dropdown in add product form
-// async function loadCategories() {
-//   const response = await fetch("https://fabribuzz.onrender.com/api/category");
-//   const catData = await response.json();
-
-//   categoryDropdown.innerHTML = `<option value="">-- Select Category --</option>`;
-//   catData.forEach((category) => {
-//     const option = document.createElement("option");
-//     option.value = category.catName;
-//     option.textContent = category.catName;
-//     categoryDropdown.appendChild(option);
-//   });
-// }
-// document.addEventListener("DOMContentLoaded", loadCategories);
-
 categoryDropdown.addEventListener("focus", async () => {
   const selectedValue = categoryDropdown.value; // keep current selection
 
