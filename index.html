@@ -298,13 +298,18 @@
               <button onclick="closePopup()">OK</button>
             </div>
           </div>
-          
+
           <div>
             <h1 class="text-3xl font-bold mb-6">Categories List</h1>
             <div class="bg-white p-6 rounded-lg shadow overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                   <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                    >
+                      SN
+                    </th>
                     <th
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
                     >
@@ -322,9 +327,12 @@
                     </th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody
+                  class="bg-white divide-y divide-gray-200"
+                  id="category-table-body"
+                >
                   <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">1</td>
+                    <!-- <td class="px-6 py-4">1</td>
                     <td class="px-6 py-4">Category 1</td>
                     <td class="px-6 py-4 space-x-2">
                       <button
@@ -337,7 +345,7 @@
                       >
                         Delete
                       </button>
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>

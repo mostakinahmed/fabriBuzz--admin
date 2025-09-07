@@ -14,6 +14,10 @@ function showSection(sectionId) {
   if (sectionId === "dashboard") {
     fetchDashboardData();
   }
+  //fetch category data when category is shown
+  if (sectionId === "categories") {
+    fetchCategoryData();
+  }
 }
 
 //popup maintainer
@@ -84,6 +88,7 @@ addBtn.addEventListener("click", async function (e) {
 async function fetchProducts() {
   const response = await fetch("https://fabribuzz.onrender.com/api/product");
   const products = await response.json();
+  countProduct = products.length;
   const productsContainer = document.getElementById("product-table-body");
 
   productsContainer.innerHTML = "";
@@ -111,25 +116,102 @@ async function fetchProducts() {
       </button>
     </td>
   `;
-
     // Append to tbody
     productsContainer.appendChild(productRow);
   });
 }
+fetchProducts();
+
+//---------------------Add new category------------------
+const addCategoryBtn = document.getElementById("addCategoryBtn");
+addCategoryBtn.addEventListener("click", async function (e) {
+  e.preventDefault();
+  //  const categoryForm = document.getElementById("categoryForm");
+  const categoryFormData = e.target.form;
+  const data = {
+    catName: categoryFormData.catname.value,
+    catID: categoryFormData.catid.value,
+  };
+  console.log(data);
+  if (data.catName === "" || data.catID === "") {
+    alert("Please fill in all fields");
+    return;
+  } else {
+    const response = await fetch(
+      "https://fabribuzz.onrender.com/api/category",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    showPopup();
+    //reset form and hide it
+    categoryForm.reset();
+    fetchCategories();
+    showAddCategory();
+  }
+});
+
+// fetch Categories
+async function fetchCategories() {
+  const response = await fetch("https://fabribuzz.onrender.com/api/category");
+  const categories = await response.json();
+  catCount = categories.length;
+  const categoriesContainer = document.getElementById("category-table-body");
+
+  categoriesContainer.innerHTML = "";
+  categories.forEach((category, index) => {
+    // Create table row
+    const categoryRow = document.createElement("tr");
+
+    categoryRow.innerHTML = `
+    <td class="px-6 py-4">${index + 1}</td>
+      <td class="px-6 py-4">${category.catID}</td>
+    <td class="px-6 py-4">${category.catName}</td>
+  
+    <td class="px-6 py-4">
+      <button class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500">
+        Edit
+      </button>
+      <button class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600">
+        Delete
+      </button>
+    </td>
+  `;
+
+    // Append to tbody
+    categoriesContainer.appendChild(categoryRow);
+  });
+}
+fetchCategories(); // Run automatically when page loads
 
 // Run automatically when page loads
 document.addEventListener("DOMContentLoaded", () => {
   fetchDashboardData();
+  fetchCategories();
+  fetchProducts();
 });
 
 //fetch dashboard data
 async function fetchDashboardData() {
-  const response = await fetch("https://fabribuzz.onrender.com/api/product");
-  const data = await response.json();
-  // Update dashboard UI with fetched data
   const dashboard = document.getElementById("dashboard");
-  const products = data;
-  const countProduct = products.length;
+
+  //product count
+  const response = await fetch("https://fabribuzz.onrender.com/api/product");
+  const pData = await response.json();
+  const catResponse = await fetch(
+    "https://fabribuzz.onrender.com/api/category"
+  );
+  const cData = await catResponse.json();
+  catCount = cData.length;
+  countProduct = pData.length;
+
+  // Update dashboard elements
+
   // document.getElementById("total-products").innerText = data.totalProducts;
   // document.getElementById("total-orders").innerText = data.totalOrders;
   // document.getElementById("total-users").innerText = data.totalUsers;
@@ -162,42 +244,8 @@ async function fetchDashboardData() {
               class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
               <h2 class="text-gray-500">Total Categories</h2>
-              <p class="text-2xl font-bold mt-2">0</p>
+              <p class="text-2xl font-bold mt-2">${catCount}</p>
             </div>
           </div>
   `;
 }
-
-//---------------------Add new category------------------
-const addCategoryBtn = document.getElementById("addCategoryBtn");
-addCategoryBtn.addEventListener("click", async function (e) {
-  e.preventDefault();
-  //  const categoryForm = document.getElementById("categoryForm");
-  const categoryFormData = e.target.form;
-  const data = {
-    catName: categoryFormData.catname.value,
-    catID: categoryFormData.catid.value,
-  };
-  console.log(data);
-  if (data.catName === "" || data.catID === "") {
-    alert("Please fill in all fields");
-    return;
-  } else {
-    const response = await fetch(
-      "https://fabribuzz.onrender.com/api/category",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
-
-    showPopup();
-    //reset form and hide it
-    categoryForm.reset();
-
-    showAddCategory();
-  }
-});
