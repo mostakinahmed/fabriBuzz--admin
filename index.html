@@ -6,30 +6,7 @@
     <title>Modern Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
-    <style>
-      .popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-      }
-      .popup-content {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        text-align: center;
-      }
-      .popup button {
-        margin-top: 10px;
-        padding: 5px 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body class="bg-gray-100 font-sans">
     <!-- Sidebar -->
@@ -120,13 +97,41 @@
 
         <!-- Products -->
         <section id="products" class="hidden">
-          <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold">Products</h1>
+          <!-- Navbar-style header -->
+          <div
+            class="w-full bg-white shadow-md rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between mb-6"
+          >
+            <!-- Left: Title -->
+            <div class="flex items-center space-x-3">
+              <h1
+                class="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight"
+              >
+                Products
+              </h1>
+              <!-- Optional icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 text-indigo-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 13V7a2 2 0 00-2-2h-4l-2-2-2 2H6a2 2 0 00-2 2v6m16 0v6a2 2 0 01-2 2h-4l-2 2-2-2H6a2 2 0 01-2-2v-6"
+                />
+              </svg>
+            </div>
+
+            <!-- Right: Add button -->
             <button
-              class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-lg shadow hover:from-blue-600 hover:to-indigo-600"
+              class="mt-3 sm:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105 flex items-center space-x-2"
               onclick="showAddProduct()"
             >
-              Add Product
+              <span>+</span>
+              <span>Add New Product</span>
             </button>
           </div>
 
@@ -138,6 +143,7 @@
             class="bg-white p-6 rounded-lg shadow mb-6 hidden"
           >
             <h2 class="text-xl font-bold mb-4">Add Product</h2>
+
             <form class="space-y-4" id="productForm">
               <input
                 type="text"
@@ -153,13 +159,15 @@
                 class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
                 required
               />
-              <input
-                type="text"
+              <select
+                id="categoryDropdown"
                 name="category"
-                placeholder="Category"
-                class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
+                class="w-full border p-2 rounded-lg"
                 required
-              />
+              >
+                <option value="">-- Select Category --</option>
+              </select>
+
               <input
                 type="text"
                 name="images"
@@ -185,7 +193,16 @@
 
           <!-- Products Table -->
           <div class="bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-bold mb-4">All Products</h2>
+            <div
+              class="w-full border-b-2 border-gray-200 pb-3 mb-6 flex items-center justify-between"
+            >
+              <h2
+                class="text-2xl font-extrabold bg-gradient-to-r from-green-500 to-emerald-700 bg-clip-text text-transparent tracking-wide"
+              >
+                All Products
+              </h2>
+            </div>
+
             <div class="overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -229,24 +246,7 @@
                   class="bg-white divide-y divide-gray-200"
                   id="product-table-body"
                 >
-                  <!-- <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">1</td>
-                    <td class="px-6 py-4">Sample Product</td>
-                    <td class="px-6 py-4">$100</td>
-                    <td class="px-6 py-4">Category 1</td>
-                    <td class="px-6 py-4 space-x-2">
-                      <button
-                        class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr> -->
+                  <!-- data load from js -->
                 </tbody>
               </table>
             </div>
@@ -255,52 +255,76 @@
 
         <!-- Categories -->
         <section id="categories" class="hidden">
-          <div class="flex justify-between items-center mb-6">
+          <!-- <div class="flex justify-between items-center mb-6">
             <button
               class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-lg shadow hover:from-blue-600 hover:to-indigo-600"
               onclick="showAddCategory()"
             >
               New Category
             </button>
-          </div>
-          <div
-            id="add-category-form"
-            class="bg-white p-6 rounded-lg shadow mb-6 hidden"
-          >
-            <h2 class="text-xl font-bold mb-4">Add Category</h2>
-            <form class="space-y-4" id="categoryForm">
-              <input
-                type="text"
-                name="catid"
-                placeholder="Category ID"
-                class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
-                required
-              />
-              <input
-                type="text"
-                name="catname"
-                placeholder="Category Name"
-                class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
-                required
-              />
-              <button
-                id="addCategoryBtn"
-                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow hover:from-green-600 hover:to-teal-600"
-              >
-                Add Category
-              </button>
-            </form>
-          </div>
-
-          <div id="popup" class="popup">
-            <div class="popup-content">
-              <p>✅ Category added successfully!</p>
-              <button onclick="closePopup()">OK</button>
-            </div>
-          </div>
+          </div> -->
 
           <div>
-            <h1 class="text-3xl font-bold mb-6">Categories List</h1>
+            <!-- Navbar-style header for Categories -->
+            <div
+              class="w-full bg-white shadow-md rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between mb-6"
+            >
+              <!-- Left: Title -->
+              <div class="flex items-center space-x-3">
+                <h1
+                  class="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight"
+                >
+                  Categories
+                </h1>
+                <!-- Optional icon -->
+              </div>
+
+              <!-- Right: Add button -->
+              <button
+                class="mt-3 sm:mt-0 bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-lg shadow-md transition transform hover:scale-105 flex items-center space-x-2"
+                onclick="showAddCategory()"
+              >
+                <span>+</span>
+                <span>Add New Category</span>
+              </button>
+            </div>
+
+            <div
+              id="add-category-form"
+              class="bg-white p-6 rounded-lg shadow mb-6 hidden"
+            >
+              <h2 class="text-xl font-bold mb-4">Add Category</h2>
+              <form class="space-y-4" id="categoryForm">
+                <input
+                  type="text"
+                  name="catid"
+                  placeholder="Category ID"
+                  class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
+                  required
+                />
+                <input
+                  type="text"
+                  name="catname"
+                  placeholder="Category Name"
+                  class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
+                  required
+                />
+                <button
+                  id="addCategoryBtn"
+                  class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow hover:from-green-600 hover:to-teal-600"
+                >
+                  Save
+                </button>
+              </form>
+            </div>
+
+            <div id="popup" class="popup">
+              <div class="popup-content">
+                <p>✅ Category added successfully!</p>
+                <button onclick="closePopup()">OK</button>
+              </div>
+            </div>
+
             <div class="bg-white p-6 rounded-lg shadow overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
