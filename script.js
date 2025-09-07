@@ -16,8 +16,23 @@ function showSection(sectionId) {
   }
 }
 
+//popup maintainer
+function showPopup() {
+  document.getElementById("popup").style.display = "flex";
+}
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
+}
+
+// Show/hide add product form
 const form = document.getElementById("add-product-form");
 function showAddProduct() {
+  form.classList.toggle("hidden");
+}
+
+// Show/hide add category form
+function showAddCategory() {
+  const form = document.getElementById("add-category-form");
   form.classList.toggle("hidden");
 }
 
@@ -26,8 +41,8 @@ function toggleSidebar() {
   sidebar.classList.toggle("-translate-x-full");
 }
 
-const addBtn = document.getElementById("addBtn");
-
+// Add new product
+const addBtn = document.getElementById("addProductBtn");
 addBtn.addEventListener("click", async function (e) {
   e.preventDefault();
   const form = e.target.form;
@@ -46,7 +61,7 @@ addBtn.addEventListener("click", async function (e) {
     data.images === "" ||
     data.description === ""
   ) {
-    console.log("Please fill in all fields");
+    alert("Please fill in all fields");
     return;
   } else {
     //console.log("All fields are filled");
@@ -58,16 +73,11 @@ addBtn.addEventListener("click", async function (e) {
     });
 
     const result = await response.text();
-
     //reset form and hide it
     form.reset();
     fetchProducts();
     showAddProduct();
   }
-
-  //reset form and hide it
-  // form.reset();
-  // form.classList.add("hidden");
 });
 
 // //show all products
@@ -126,9 +136,7 @@ async function fetchDashboardData() {
   // document.getElementById("total-categories").innerText = data.totalCategories;
 
   // You can also update charts or other dashboard elements here
-  dashboard.innerHTML = "";
-  //const productRow = document.createElement("tr");
-
+  dashboard.innerHTML = ""; //reset dashboard content
   dashboard.innerHTML = `
      <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -158,7 +166,38 @@ async function fetchDashboardData() {
             </div>
           </div>
   `;
-
-  // Append to tbody
-  productsContainer.appendChild(productRow);
 }
+
+//---------------------Add new category------------------
+const addCategoryBtn = document.getElementById("addCategoryBtn");
+addCategoryBtn.addEventListener("click", async function (e) {
+  e.preventDefault();
+  //  const categoryForm = document.getElementById("categoryForm");
+  const categoryFormData = e.target.form;
+  const data = {
+    catName: categoryFormData.catname.value,
+    catID: categoryFormData.catid.value,
+  };
+  console.log(data);
+  if (data.catName === "" || data.catID === "") {
+    alert("Please fill in all fields");
+    return;
+  } else {
+    const response = await fetch(
+      "https://fabribuzz.onrender.com/api/category",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    showPopup();
+    //reset form and hide it
+    categoryForm.reset();
+
+    showAddCategory();
+  }
+});
