@@ -56,6 +56,7 @@ addBtn.addEventListener("click", async function (e) {
   const allCatData = await response.json();
 
   const data = {
+    pID: "NULL",
     name: form.name.value,
     price: form.price.value,
     category: form.category.value,
@@ -88,7 +89,8 @@ addBtn.addEventListener("click", async function (e) {
       body: JSON.stringify(data),
     });
 
-    const result = await response.text();
+    // await response.text();
+    await response.json();
     //reset form and hide it
     form.reset();
     fetchProducts();
