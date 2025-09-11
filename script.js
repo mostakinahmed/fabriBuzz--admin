@@ -72,12 +72,6 @@ function showAddProduct() {
   stockUpdateDiv.classList.add("hidden");
   allProductTable.classList.add("hidden");
   form.classList.remove("hidden");
-  // const state = allProductTable.classList.contains("hidden") ? 0 : 1;
-  // if (state == 1) {
-  //   allProductTable.classList.add("hidden");
-  // } else {
-  //   allProductTable.classList.remove("hidden");
-  // }
 }
 
 // Show/hide update stock form
@@ -86,13 +80,6 @@ function showUpdateStock() {
   form.classList.add("hidden");
   allProductTable.classList.add("hidden");
   updateSearchProductForm.classList.remove("hidden");
-
-  // const state = allProductTable.classList.contains("hidden") ? 0 : 1;
-  // if (state == 1) {
-  //   allProductTable.classList.add("hidden");
-  // } else {
-  //   allProductTable.classList.remove("hidden");
-  // }
 
   stockUpdateDiv.classList.add("hidden");
   //input field make empty
@@ -294,10 +281,6 @@ async function fetchDashboardData() {
   );
   const cData = await catResponse.json();
 
-  //hide loader
-  // const loadingDashboard = document.getElementById("loadingDashboard");
-  // loadingDashboard.classList.add("hidden");
-
   catCount = cData.length;
   countProduct = pData.length;
 
@@ -423,8 +406,6 @@ searchProductBtn.addEventListener("click", async (e) => {
 });
 
 function showDataDiv(ID, foundData) {
-  console.log(foundData);
-
   const stockUpdateDiv = document.getElementById("stockUpdateDiv");
 
   stockUpdateDiv.innerHTML = "";
@@ -478,6 +459,7 @@ function showDataDiv(ID, foundData) {
                   required
                 />
                 <button
+                id="update-stock-button"
                   type="submit"
                   class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-full font-semibold shadow-lg hover:scale-105 transform transition"
                 >
@@ -486,17 +468,34 @@ function showDataDiv(ID, foundData) {
               </form>
             </div>
   `;
+
+  //for button
+  const updateStockButton = document.getElementById("update-stock-button");
+  //update stock button
+  updateStockButton.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const form = e.target.form;
+    const stockValue = form.stock.value;
+
+    stockUpdate(ID, stockValue);
+  });
 }
 
-// async function stockUpdate(pID) {
+async function stockUpdate(pID, stockValue) {
+  const data = { stock: stockValue };
+  const response = await fetch(
+    `https://fabribuzz.onrender.com/api/product/${pID}/stock`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
 
-//     const response = await fetch(
-//       `https://fabribuzz.onrender.com/api/${pID}/stock`,
-//       {
-//         method: "PATCH",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(data),
-//       })
-//  }
+  if (!response.ok) {
+    throw new Error(`Failed to update stock: ${response.status}`);
+  }
+}
