@@ -3,7 +3,12 @@ const searchProductBtn = document.getElementById("search-product-btn");
 const stockUpdateDiv = document.getElementById("stockUpdateDiv");
 const productNotFound = document.getElementById("product-not-found");
 const loadingForSearchData = document.getElementById("loadingForSearchData");
+const loadingForAddProduct = document.getElementById("loadingForAddProduct");
+const loadingForAddCat = document.getElementById("loadingForAddCat");
 const updateSearchProductForm = document.getElementById("stock-search-form");
+const addCatform = document.getElementById("add-category-form");
+const addCategoryBtn = document.getElementById("addCategoryBtn");
+const catListForm = document.getElementById("catList");
 const allProductTable = document.getElementById("allProductTable");
 const form = document.getElementById("add-product-form");
 const loadingDashboard = document.getElementById("loadingDashboard");
@@ -39,6 +44,9 @@ function showSection(sectionId) {
   if (addNewPro_images) addNewPro_images.value = "";
   if (addNewPro_description) addNewPro_description.value = "";
 
+  //hide all cat data
+  addCatform.classList.add("hidden");
+  catListForm.classList.remove("hidden"); //show this section when other section is active
   //only show the selected section
   document.getElementById(sectionId).classList.remove("hidden");
 
@@ -86,10 +94,10 @@ function showUpdateStock() {
   if (searchInput) searchInput.value = "";
 }
 
-// Show/hide add category form
+// Show/hide add new category form
 function showAddCategory() {
-  const form = document.getElementById("add-category-form");
-  form.classList.toggle("hidden");
+  catListForm.classList.add("hidden");
+  addCatform.classList.remove("hidden");
 }
 
 function toggleSidebar() {
@@ -100,6 +108,7 @@ function toggleSidebar() {
 // Add new product
 const addBtn = document.getElementById("addProductBtn");
 addBtn.addEventListener("click", async function (e) {
+  loadingForAddProduct.classList.remove("hidden");
   e.preventDefault();
   const form = e.target.form;
 
@@ -145,6 +154,7 @@ addBtn.addEventListener("click", async function (e) {
     await response.json();
     //reset form and hide it
     form.reset();
+    loadingForAddProduct.classList.add("hidden");
     showSection("products");
   }
 });
@@ -198,8 +208,8 @@ async function fetchProducts() {
 fetchProducts();
 
 //---------------------Add new category------------------
-const addCategoryBtn = document.getElementById("addCategoryBtn");
 addCategoryBtn.addEventListener("click", async function (e) {
+  loadingForAddCat.classList.remove("hidden");
   e.preventDefault();
   //  const categoryForm = document.getElementById("categoryForm");
   const categoryFormData = e.target.form;
@@ -222,12 +232,11 @@ addCategoryBtn.addEventListener("click", async function (e) {
         body: JSON.stringify(data),
       }
     );
-
-    showPopup();
     //reset form and hide it
     categoryForm.reset();
     fetchCategories();
-    showAddCategory();
+    showSection("categories");
+    loadingForAddCat.classList.add("hidden");
   }
 });
 
@@ -445,6 +454,7 @@ function showDataDiv(ID, foundData) {
                     <span class="text-gray-500">Current Stock:</span>
                     <span id="product-stock">${foundData.stock}</span>
                   </p>
+
                 </div>
               </div>
 
@@ -460,6 +470,13 @@ function showDataDiv(ID, foundData) {
                   class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                   required
                 />
+                <!-- Small loading spinner beside button -->
+<div id="loadingForUpdateStock" class="flex items-center space-x-2 hidden">
+  <!-- Spinner -->
+  <div class="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+  <!-- Text -->
+  <span class="text-gray-600 text-sm font-medium">Updating...</span>
+</div>
                 <button
                 id="update-stock-button"
                   type="submit"
@@ -468,9 +485,16 @@ function showDataDiv(ID, foundData) {
                   Update Stock
                 </button>
               </form>
+              <!-- loader -->
+         
+
             </div>
   `;
 
+  //for loader
+  const loadingForUpdateStock = document.getElementById(
+    "loadingForUpdateStock"
+  );
   //for button
   const updateStockButton = document.getElementById("update-stock-button");
   //update stock button
@@ -478,14 +502,21 @@ function showDataDiv(ID, foundData) {
     e.preventDefault();
 
     const form = e.target.form;
-    const stockValue = form.stock.value;
-
-    stockUpdate(ID, stockValue);
+    let stockValue = form.stock.value;
+    if (stockValue === "") {
+      alert("Please input stock value.");
+      return;
+    }
+    loadingForUpdateStock.classList.remove("hidden");
+    stockValue = Number(stockValue);
+    stockValue = stockValue + foundData.stock;
+    stockUpdate(foundData.pID, stockValue);
   });
 }
 
 async function stockUpdate(pID, stockValue) {
   const data = { stock: stockValue };
+  console.log(pID);
   const response = await fetch(
     `https://fabribuzz.onrender.com/api/product/${pID}/stock`,
     {
@@ -497,13 +528,11 @@ async function stockUpdate(pID, stockValue) {
     }
   );
 
-   if (response.ok) {
-    console.log("product Update");
+  if (response.ok) {
+    loadingForUpdateStock.classList.add("hidden");
     showSection("products");
-    
   }
   if (!response.ok) {
     throw new Error(`Failed to update stock: ${response.status}`);
   }
-
 }
