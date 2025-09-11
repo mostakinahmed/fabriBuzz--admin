@@ -4,7 +4,9 @@ const stockUpdateDiv = document.getElementById("stockUpdateDiv");
 const productNotFound = document.getElementById("product-not-found");
 const loadingForSearchData = document.getElementById("loadingForSearchData");
 const updateSearchProductForm = document.getElementById("stock-search-form");
+const allProductTable = document.getElementById("allProductTable");
 const form = document.getElementById("add-product-form");
+const loadingDashboard = document.getElementById("loadingDashboard");
 const searchInput = updateSearchProductForm.querySelector('input[name="pID"]');
 const addNewPro_name = form.querySelector('input[name="name"]');
 const addNewPro_price = form.querySelector('input[name="price"]');
@@ -13,7 +15,7 @@ const addNewPro_images = form.querySelector('input[name="images"]');
 const addNewPro_description = form.querySelector(
   'textarea[name="description"]'
 );
-
+loadingDashboard.classList.remove("hidden");
 // loadingForSearchData.classList.add("hidden");
 //feather all
 feather.replace();
@@ -43,6 +45,7 @@ function showSection(sectionId) {
   // Fetch products when the Products section is shown
   if (sectionId === "products") {
     fetchProducts();
+    allProductTable.classList.remove("hidden");
   }
   //fetch dashboard data when dashboard is shown
   if (sectionId === "dashboard") {
@@ -64,16 +67,34 @@ function closePopup() {
 
 // Show/hide add product form
 function showAddProduct() {
+  productNotFound.classList.add("hidden");
   updateSearchProductForm.classList.add("hidden");
-  form.classList.toggle("hidden");
+  stockUpdateDiv.classList.add("hidden");
+  allProductTable.classList.add("hidden");
+  form.classList.remove("hidden");
+  // const state = allProductTable.classList.contains("hidden") ? 0 : 1;
+  // if (state == 1) {
+  //   allProductTable.classList.add("hidden");
+  // } else {
+  //   allProductTable.classList.remove("hidden");
+  // }
 }
 
 // Show/hide update stock form
 function showUpdateStock() {
+  productNotFound.classList.add("hidden");
   form.classList.add("hidden");
-  updateSearchProductForm.classList.toggle("hidden");
-  stockUpdateDiv.classList.add("hidden");
+  allProductTable.classList.add("hidden");
+  updateSearchProductForm.classList.remove("hidden");
 
+  // const state = allProductTable.classList.contains("hidden") ? 0 : 1;
+  // if (state == 1) {
+  //   allProductTable.classList.add("hidden");
+  // } else {
+  //   allProductTable.classList.remove("hidden");
+  // }
+
+  stockUpdateDiv.classList.add("hidden");
   //input field make empty
   if (searchInput) searchInput.value = "";
 }
@@ -137,8 +158,7 @@ addBtn.addEventListener("click", async function (e) {
     await response.json();
     //reset form and hide it
     form.reset();
-    fetchProducts();
-    showAddProduct();
+    showSection("products");
   }
 });
 
@@ -273,6 +293,11 @@ async function fetchDashboardData() {
     "https://fabribuzz.onrender.com/api/category"
   );
   const cData = await catResponse.json();
+
+  //hide loader
+  // const loadingDashboard = document.getElementById("loadingDashboard");
+  // loadingDashboard.classList.add("hidden");
+
   catCount = cData.length;
   countProduct = pData.length;
 
@@ -327,6 +352,7 @@ async function fetchDashboardData() {
             
           </div>
   `;
+  loadingDashboard.classList.add("hidden");
 }
 
 categoryDropdown.addEventListener("focus", async () => {
@@ -373,9 +399,11 @@ searchProductBtn.addEventListener("click", async (e) => {
   const proData = await response.json();
 
   let found = 0;
+  let foundData;
   proData.forEach((product) => {
     if (product.pID === pid) {
       found = 1;
+      foundData = product;
       return;
     }
   });
@@ -384,9 +412,91 @@ searchProductBtn.addEventListener("click", async (e) => {
     loadingForSearchData.classList.add("hidden");
     stockUpdateDiv.classList.remove("hidden");
     productNotFound.classList.add("hidden");
+
+    // stockUpdate(pid);
+    showDataDiv(pid, foundData);
   } else if (found == 0) {
     loadingForSearchData.classList.add("hidden");
     productNotFound.classList.remove("hidden");
     stockUpdateDiv.classList.add("hidden");
   }
 });
+
+function showDataDiv(ID, foundData) {
+  console.log(foundData);
+
+  const stockUpdateDiv = document.getElementById("stockUpdateDiv");
+
+  stockUpdateDiv.innerHTML = "";
+  stockUpdateDiv.innerHTML = ` <div class="flex-shrink-0 w-full md:w-1/3">
+              <img
+                id="product-image"
+                src="${foundData.images}"
+                alt="Product Image"
+                class="w-full h-full object-cover rounded-xl border border-gray-200"
+              />
+            </div>
+
+            <!-- Product Details & Update Stock -->
+            <div class="flex-1 flex flex-col justify-between space-y-4">
+              <!-- Product Info -->
+              <div class="space-y-3">
+                <h3
+                  class="text-3xl font-extrabold text-gray-900 tracking-tight"
+                  id="product-name"
+                >
+                  ${foundData.name}
+                </h3>
+                <div class="grid grid-cols-2 gap-4 text-gray-700">
+                  <p class="font-medium">
+                    <span class="text-gray-500">ID:</span>
+                    <span id="product-id">${foundData.pID}</span>
+                  </p>
+                  <p class="font-medium">
+                    <span class="text-gray-500">Price:</span> $<span
+                      id="product-price"
+                      >${foundData.price}</span
+                    >
+                  </p>
+                  <p class="font-medium">
+                    <span class="text-gray-500">Current Stock:</span>
+                    <span id="product-stock">${foundData.stock}</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Update Stock Form -->
+              <form
+                id="update-stock-form"
+                class="mt-4 flex flex-col sm:flex-row items-center gap-3"
+              >
+                <input
+                  type="number"
+                  name="stock"
+                  placeholder="Enter new stock"
+                  class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                  required
+                />
+                <button
+                  type="submit"
+                  class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-full font-semibold shadow-lg hover:scale-105 transform transition"
+                >
+                  Update Stock
+                </button>
+              </form>
+            </div>
+  `;
+}
+
+// async function stockUpdate(pID) {
+
+//     const response = await fetch(
+//       `https://fabribuzz.onrender.com/api/${pID}/stock`,
+//       {
+//         method: "PATCH",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(data),
+//       })
+//  }
