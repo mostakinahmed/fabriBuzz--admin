@@ -8,26 +8,86 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
+
+  <!-- main body -->
   <body class="bg-gray-100 font-sans">
+    <div
+      class="topnav bg-gray-900 text-white flex items-center justify-between p-4 block md:hidden"
+    >
+      <a href="#home" class="text-lg font-bold">Admin Panel</a>
+
+      <!-- Hamburger menu -->
+      <button onclick="toggleMenu()" class="text-white text-2xl">
+        <i class="fa fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Navigation links (hidden by default) -->
+    <div
+      id="myLinks"
+      class="hidden bg-gray-800 text-white flex flex-col space-y-2 p-4 md:hidden"
+    >
+      <a
+        href="#"
+        class="hover:bg-gray-700 px-3 py-2 rounded"
+        onclick="showAndHideMenu('dashboard')"
+        >Dashboard</a
+      >
+      <a
+        href="#"
+        class="hover:bg-gray-700 px-3 py-2 rounded"
+        onclick="showAndHideMenu('products')"
+        >Product</a
+      >
+      <a
+        href="#"
+        class="hover:bg-gray-700 px-3 py-2 rounded"
+        onclick="showAndHideMenu('categories')"
+        >Categories</a
+      >
+      <a
+        href="#"
+        class="hover:bg-gray-700 px-3 py-2 rounded"
+        onclick="showAndHideMenu('orders')"
+        >Orders</a
+      >
+    </div>
+
+    <script>
+      const links = document.getElementById("myLinks");
+
+      function toggleMenu() {
+        links.classList.toggle("hidden");
+      }
+
+      function showAndHideMenu(sectionId) {
+        // Call your function to show the section
+        if (sectionId === "categories") {
+          links.classList.add("hidden");
+        }
+        showSection(sectionId);
+        // Hide the mobile menu
+        links.classList.add("hidden");
+      }
+    </script>
+
     <!-- Sidebar -->
     <div class="flex h-screen">
-      
       <aside
         id="sidebar"
-        class="w-64 bg-gray-900 text-white flex-shrink-0 transition-all duration-300"
+        class="w-64 bg-gray-900 text-white flex-shrink-0 transition-all duration-300 hidden md:block"
       >
         <div
           class="flex items-center justify-between p-6 border-b border-gray-700"
         >
           <span class="text-2xl font-bold">Admin Panel</span>
-          <button
-            onclick="toggleSidebar()"
-            class="text-gray-300 hover:text-white md:hidden"
-          >
-            <i data-feather="menu"></i>
-          </button>
+          <!-- Hamburger button can be removed here for large screens -->
         </div>
         <nav class="mt-6">
           <ul>
@@ -64,11 +124,6 @@
           </ul>
         </nav>
       </aside>
-      <script>
-        function toggleSidebar() {
-          document.getElementById("sidebar").classList.toggle("active");
-        }
-      </script>
 
       <!-- Main content -->
       <main class="flex-1 p-6 overflow-auto">
