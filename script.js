@@ -173,6 +173,7 @@ async function fetchProducts() {
     const productRow = document.createElement("tr");
     productRow.innerHTML = `
       <td class="px-6 py-4">${index + 1}</td>
+      <td class="px-6 py-4">${product.pID}</td>
       <td class="px-6 py-4">${product.name}</td>
       <td class="px-6 py-4">$${product.price}</td>
       <td class="px-6 py-4">${product.stock}</td>
@@ -496,7 +497,13 @@ async function stockUpdate(pID, stockValue) {
     }
   );
 
+   if (response.ok) {
+    console.log("product Update");
+    showSection("products");
+    
+  }
   if (!response.ok) {
     throw new Error(`Failed to update stock: ${response.status}`);
   }
+
 }
