@@ -163,7 +163,7 @@ async function fetchProducts() {
   productsContainer.innerHTML = "";
 
   products.forEach((product, index) => {
-    // 🔎 Find matching category by ID
+    // Find matching category by ID
     const category = cData.find((cat) => cat.catID === product.category);
 
     // Replace ID with category name (if found)
@@ -175,6 +175,7 @@ async function fetchProducts() {
       <td class="px-6 py-4">${index + 1}</td>
       <td class="px-6 py-4">${product.name}</td>
       <td class="px-6 py-4">$${product.price}</td>
+      <td class="px-6 py-4">${product.stock}</td>
       <td class="px-6 py-4">${categoryName}</td>
       <td class="px-6 py-4">
         <img src="${product.images}" alt="${product.name}" 
