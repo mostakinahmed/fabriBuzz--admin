@@ -1,9 +1,43 @@
+//variable
+const searchProductBtn = document.getElementById("search-product-btn");
+const stockUpdateDiv = document.getElementById("stockUpdateDiv");
+const productNotFound = document.getElementById("product-not-found");
+const loadingForSearchData = document.getElementById("loadingForSearchData");
+const updateSearchProductForm = document.getElementById("stock-search-form");
+const form = document.getElementById("add-product-form");
+const searchInput = updateSearchProductForm.querySelector('input[name="pID"]');
+const addNewPro_name = form.querySelector('input[name="name"]');
+const addNewPro_price = form.querySelector('input[name="price"]');
+const addNewPro_category = form.querySelector('select[name="category"]');
+const addNewPro_images = form.querySelector('input[name="images"]');
+const addNewPro_description = form.querySelector(
+  'textarea[name="description"]'
+);
+
+// loadingForSearchData.classList.add("hidden");
+//feather all
 feather.replace();
 function showSection(sectionId) {
   const sections = ["dashboard", "products", "categories", "orders", "users"];
   sections.forEach((id) => {
     document.getElementById(id).classList.add("hidden");
   });
+
+  // Hide all product info after click in another tab
+  updateSearchProductForm.classList.add("hidden");
+  if (searchInput) searchInput.value = "";
+  stockUpdateDiv.classList.add("hidden");
+  productNotFound.classList.add("hidden");
+
+  //hide all add new pro form data after click another section
+  form.classList.add("hidden");
+  if (addNewPro_name) addNewPro_name.value = "";
+  if (addNewPro_price) addNewPro_price.value = "";
+  if (addNewPro_category) addNewPro_category.value = "";
+  if (addNewPro_images) addNewPro_images.value = "";
+  if (addNewPro_description) addNewPro_description.value = "";
+
+  //only show the selected section
   document.getElementById(sectionId).classList.remove("hidden");
 
   // Fetch products when the Products section is shown
@@ -29,9 +63,19 @@ function closePopup() {
 }
 
 // Show/hide add product form
-const form = document.getElementById("add-product-form");
 function showAddProduct() {
+  updateSearchProductForm.classList.add("hidden");
   form.classList.toggle("hidden");
+}
+
+// Show/hide update stock form
+function showUpdateStock() {
+  form.classList.add("hidden");
+  updateSearchProductForm.classList.toggle("hidden");
+  stockUpdateDiv.classList.add("hidden");
+
+  //input field make empty
+  if (searchInput) searchInput.value = "";
 }
 
 // Show/hide add category form
@@ -301,4 +345,48 @@ categoryDropdown.addEventListener("focus", async () => {
     }
     categoryDropdown.appendChild(option);
   });
+});
+
+//--------------stock update----------------
+//search product
+// const searchProductBtn = document.getElementById("search-product-btn");
+// const stockUpdateDiv = document.getElementById("stockUpdateDiv");
+// const productNotFound = document.getElementById("product-not-found");
+// const loadingForSearchData = document.getElementById("loadingForSearchData");
+
+searchProductBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  loadingForSearchData.classList.remove("hidden");
+  productNotFound.classList.add("hidden");
+  stockUpdateDiv.classList.add("hidden");
+  const form = e.target.form;
+  pid = form.pID.value;
+
+  //handle empty input
+  if (pid == "") {
+    loadingForSearchData.classList.add("hidden");
+    alert("Please input Product ID");
+    return;
+  }
+  //get product data
+  const response = await fetch("https://fabribuzz.onrender.com/api/product");
+  const proData = await response.json();
+
+  let found = 0;
+  proData.forEach((product) => {
+    if (product.pID === pid) {
+      found = 1;
+      return;
+    }
+  });
+
+  if (found == 1) {
+    loadingForSearchData.classList.add("hidden");
+    stockUpdateDiv.classList.remove("hidden");
+    productNotFound.classList.add("hidden");
+  } else if (found == 0) {
+    loadingForSearchData.classList.add("hidden");
+    productNotFound.classList.remove("hidden");
+    stockUpdateDiv.classList.add("hidden");
+  }
 });
