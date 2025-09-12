@@ -214,7 +214,7 @@ async function deleteFunction(event, productID) {
 
   try {
     const response = await fetch(
-      `https://fabribuzz.onrender.com/api/product/${productID}`,
+      `https://fabribuzz.onrender.com/api/product/delete/${productID}`,
       {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
