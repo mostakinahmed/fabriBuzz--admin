@@ -196,16 +196,53 @@ async function fetchProducts() {
         <button class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500">
           Edit
         </button>
-        <button class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600">
+        <button class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"  onclick="deleteFunction(event, '${
+          product._id
+        }')"> 
           Delete
         </button>
       </td>
     `;
-
     productsContainer.appendChild(productRow);
   });
 }
 fetchProducts();
+
+//delete pro function
+async function deleteFunction(event, productID) {
+  event.preventDefault(); // prevents reload
+
+  try {
+    const response = await fetch(
+      `https://fabribuzz.onrender.com/api/product/${productID}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    let result;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      result = await response.json();
+    } else {
+      result = { message: "Product deleted (no JSON returned)" };
+    }
+
+    if (response.ok) {
+      alert(result.message);
+
+      // remove row from table
+      const row = event.target.closest("tr");
+      if (row) row.remove();
+    } else {
+      alert(result.message || "Delete failed");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error deleting product");
+  }
+}
 
 //---------------------Add new category------------------
 addCategoryBtn.addEventListener("click", async function (e) {
@@ -369,11 +406,6 @@ categoryDropdown.addEventListener("focus", async () => {
 
 //--------------stock update----------------
 //search product
-// const searchProductBtn = document.getElementById("search-product-btn");
-// const stockUpdateDiv = document.getElementById("stockUpdateDiv");
-// const productNotFound = document.getElementById("product-not-found");
-// const loadingForSearchData = document.getElementById("loadingForSearchData");
-
 searchProductBtn.addEventListener("click", async (e) => {
   e.preventDefault();
   loadingForSearchData.classList.remove("hidden");
@@ -486,8 +518,6 @@ function showDataDiv(ID, foundData) {
                 </button>
               </form>
               <!-- loader -->
-         
-
             </div>
   `;
 
