@@ -192,17 +192,31 @@ async function fetchProducts() {
         <img src="${product.images}" alt="${product.name}" 
              class="h-12 w-12 object-cover rounded-md" />
       </td>
-      <td class="px-6 py-4 space-x-2">
-        <button class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500">
-          Edit
-        </button>
-        <button class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"  onclick="deleteFunction(event, '${
-          product._id
-        }')"> 
-          Delete
-        </button>
-      </td>
+     <td class="px-6 py-4 flex items-center space-x-2">
+  <!-- Edit button -->
+  <button class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500">
+    Edit
+  </button>
+
+  <!-- Delete button -->
+  <button
+    class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
+    onclick="deleteFunction(event, '${product._id}')"
+  >
+    Delete
+  </button>
+
+  <!-- Loader-->
+  <div
+    id="loadingForDelete"
+    class="hidden flex items-left space-x-2"
+  >
+    <div class="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+    <span class="text-gray-600 text-[15px] font-medium">Deleting...</span>
+  </div>
+</td>
     `;
+    // const loadingForDelete = getElementById("loadingForDelete");
     productsContainer.appendChild(productRow);
   });
 }
@@ -211,6 +225,10 @@ fetchProducts();
 //delete pro function
 async function deleteFunction(event, productID) {
   event.preventDefault(); // prevents reload
+
+  // loader is the next sibling of the Delete button
+  const loaderForDelete = event.target.nextElementSibling;
+  loaderForDelete.classList.remove("hidden");
 
   try {
     const response = await fetch(
@@ -230,8 +248,8 @@ async function deleteFunction(event, productID) {
     }
 
     if (response.ok) {
-      alert(result.message);
-
+      // alert(result.message);
+      loaderForDelete.classList.add("hidden"); // hide loader
       // remove row from table
       const row = event.target.closest("tr");
       if (row) row.remove();
@@ -269,11 +287,11 @@ addCategoryBtn.addEventListener("click", async function (e) {
         body: JSON.stringify(data),
       }
     );
+    loadingForAddCat.classList.add("hidden");
     //reset form and hide it
     categoryForm.reset();
     fetchCategories();
     showSection("categories");
-    loadingForAddCat.classList.add("hidden");
   }
 });
 
@@ -294,14 +312,29 @@ async function fetchCategories() {
       <td class="px-6 py-4">${category.catID}</td>
     <td class="px-6 py-4">${category.catName}</td>
   
-    <td class="px-6 py-4">
-      <button class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500">
-        Edit
-      </button>
-      <button class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600">
-        Delete
-      </button>
-    </td>
+    <td class="px-6 py-4 flex items-center space-x-2">
+  <!-- Edit button -->
+  <button class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500">
+    Edit
+  </button>
+
+  <!-- Delete button -->
+  <button
+    class="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
+    onclick="deleteCategoryFunction(event, '${category._id}')"
+  >
+    Delete
+  </button>
+
+  <!-- Loader-->
+  <div
+    id="loadingForCatDelete"
+    class=" hidden flex items-left pl-6 space-x-2"
+  >
+    <div class="w-5 h-5 mt-1 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+    <span class="text-gray-600 text-[17px] font-medium">Deleting...</span>
+  </div>
+</td>
   `;
 
     // Append to tbody
@@ -316,6 +349,46 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchCategories();
   fetchProducts();
 });
+
+//delete cat function
+async function deleteCategoryFunction(event, categoryID) {
+  event.preventDefault(); // prevents reload
+
+  // loader is the next sibling of the Delete button
+  const loadingForCatDelete = event.target.nextElementSibling;
+  loadingForCatDelete.classList.remove("hidden");
+
+  try {
+    const response = await fetch(
+      `https://fabribuzz.onrender.com/api/category/delete/${categoryID}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    let result;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      result = await response.json();
+    } else {
+      result = { message: "Product deleted (no JSON returned)" };
+    }
+
+    if (response.ok) {
+      // alert(result.message);
+      loadingForCatDelete.classList.add("hidden"); // hide loader
+      // remove row from table
+      const row = event.target.closest("tr");
+      if (row) row.remove();
+    } else {
+      alert(result.message || "Delete failed");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error deleting product");
+  }
+}
 
 //fetch dashboard data
 async function fetchDashboardData() {
