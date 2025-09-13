@@ -195,7 +195,19 @@
             </button>
           </div>
 
-          <!-- <button onclick="showPopup()">Add Category</button> -->
+          <!-- loader for edit-->
+          <section id="loadingForEdit" class="hidden">
+            <div class="flex items-center justify-center min-h-[300px]">
+              <div class="flex flex-col items-center space-y-4">
+                <!-- Spinner -->
+                <div
+                  class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"
+                ></div>
+                <!-- Text -->
+                <p class="text-gray-600 font-medium">Loading...</p>
+              </div>
+            </div>
+          </section>
 
           <!-- update stock Form -->
           <div
@@ -217,6 +229,12 @@
                 class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow hover:from-green-600 hover:to-teal-600"
               >
                 Search
+              </button>
+              <button
+                id="stockUpdateCancel"
+                class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600"
+              >
+                Cancel
               </button>
             </form>
           </div>
@@ -316,10 +334,44 @@
               ></textarea>
               <button
                 id="addProductBtn"
-                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow hover:from-green-600 hover:to-teal-600"
+                class="bg-gradient-to-r pl-6 pr-6 from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow hover:from-green-600 hover:to-teal-600"
               >
                 Save
               </button>
+
+              <button
+                id="addProductCancel"
+                class="bg-gradient-to-r from-red-500 to-red-500 text-white px-4 py-2 rounded-lg shadow hover:from-red-600 hover:to-red-600"
+              >
+                Cancel
+              </button>
+
+              <!-- loader -->
+              <div
+                id="loadingForAddProduct"
+                class="flex justify-center items-center space-x-2 hidden"
+              >
+                <!-- Spinner -->
+                <div
+                  class="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"
+                ></div>
+                <!-- Text -->
+                <span class="text-gray-600 text-[20px] font-medium"
+                  >Adding Product...</span
+                >
+              </div>
+            </form>
+          </div>
+
+          <!-----------Edit Product Form-------------->
+          <div
+            id="edit-product-form"
+            class="bg-white p-6 rounded-lg shadow mb-6 mt-5 hidden"
+          >
+            <h2 class="text-xl font-bold mb-4">Edit Product</h2>
+
+            <form class="space-y-4" id="editProductForm">
+              <!-- data load form api -->
 
               <!-- loader -->
               <div
@@ -465,6 +517,12 @@
                   class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow hover:from-green-600 hover:to-teal-600"
                 >
                   Save
+                </button>
+                <button
+                  id="addCategoryCancel"
+                  class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:red-600"
+                >
+                  Cancel
                 </button>
 
                 <!-- loader -->

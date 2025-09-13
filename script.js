@@ -1,16 +1,22 @@
 //variable
 const searchProductBtn = document.getElementById("search-product-btn");
 const stockUpdateDiv = document.getElementById("stockUpdateDiv");
+const updateSearchProductForm = document.getElementById("stock-search-form");
 const productNotFound = document.getElementById("product-not-found");
 const loadingForSearchData = document.getElementById("loadingForSearchData");
 const loadingForAddProduct = document.getElementById("loadingForAddProduct");
+const loadingForEdit = document.getElementById("loadingForEdit");
 const loadingForAddCat = document.getElementById("loadingForAddCat");
-const updateSearchProductForm = document.getElementById("stock-search-form");
 const addCatform = document.getElementById("add-category-form");
+const addCategoryCancel = document.getElementById("addCategoryCancel");
+const addProductCancel = document.getElementById("addProductCancel");
+const stockUpdateCancel = document.getElementById("stockUpdateCancel");
 const addCategoryBtn = document.getElementById("addCategoryBtn");
+const editProductForm = document.getElementById("editProductForm");
 const catListForm = document.getElementById("catList");
 const allProductTable = document.getElementById("allProductTable");
 const form = document.getElementById("add-product-form");
+const editForm = document.getElementById("edit-product-form");
 const loadingDashboard = document.getElementById("loadingDashboard");
 const searchInput = updateSearchProductForm.querySelector('input[name="pID"]');
 const addNewPro_name = form.querySelector('input[name="name"]');
@@ -54,6 +60,7 @@ function showSection(sectionId) {
   if (sectionId === "products") {
     fetchProducts();
     allProductTable.classList.remove("hidden");
+    editForm.classList.add("hidden");
   }
   //fetch dashboard data when dashboard is shown
   if (sectionId === "dashboard") {
@@ -159,6 +166,14 @@ addBtn.addEventListener("click", async function (e) {
   }
 });
 
+//cancel button
+addProductCancel.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  form.classList.add("hidden");
+  allProductTable.classList.remove("hidden");
+});
+
 // Show all products
 async function fetchProducts() {
   const response = await fetch("https://fabribuzz.onrender.com/api/product");
@@ -194,7 +209,9 @@ async function fetchProducts() {
       </td>
      <td class="px-6 py-4 flex items-center space-x-2">
   <!-- Edit button -->
-  <button class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500">
+  <button class="bg-yellow-400 text-white px-2 py-1 rounded-lg hover:bg-yellow-500" onclick="editFunction(event, '${
+    product._id
+  }')">
     Edit
   </button>
 
@@ -262,6 +279,141 @@ async function deleteFunction(event, productID) {
   }
 }
 
+//Update Product
+async function editFunction(event, productID) {
+  event.preventDefault(); // prevents reload
+  loadingForEdit.classList.remove("hidden");
+  allProductTable.classList.add("hidden");
+  const response = await fetch("https://fabribuzz.onrender.com/api/product");
+  const products = await response.json();
+  const product = products.find((p) => p._id === productID);
+  //all product data
+  editForm.classList.remove("hidden");
+  allProductTable.classList.add("hidden");
+  loadingForEdit.classList.add("hidden");
+  editProductForm.innerHTML = ""; //reset dashboard content
+  editProductForm.innerHTML = `<input
+                type="text"
+                name="name"
+                value="${product.name}"
+                class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
+                required
+              />
+              <input
+                type="number"
+                name="price"
+                value="${product.price}"
+                class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
+                required
+              />
+               <input
+               name = "stock"
+                type="number"
+                disabled
+                value="${product.stock}"
+                class="w-full border p-2 rounded-lg  text-gray-500  focus:ring-2 focus:ring-indigo-400"
+                required
+              />
+          
+              <select
+                id="categoryDropdownForEditProduct"
+                name="category"
+                class="w-full border p-2 rounded-lg"
+                disabled
+                required
+              >
+                <option value="${product.category}">${product.category}</option>
+              </select>
+
+              <input
+                type="text"
+                name="images"
+                value="${product.images}"
+                class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
+                required
+              />
+
+             <textarea
+  name="description"
+  class="w-full border p-2 rounded-lg focus:ring-2 focus:ring-indigo-400"
+  required
+>${product.description}</textarea>
+               <button
+                class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow hover:from-green-600 hover:to-teal-600" 
+                onclick="updateProductFunction(event,'${product._id}')"
+              >
+                Update Product
+              </button>
+               <button
+                id="editCancel"
+                class="bg-gradient-to-r from-red-500 to-red-500 text-white px-4 py-2 rounded-lg shadow hover:from-red-600 hover:to-red-600"
+              >
+                Cancel
+              </button>
+  `;
+
+  //cancel button
+  const editCancel = document.getElementById("editCancel");
+  editCancel.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    editForm.classList.add("hidden");
+    allProductTable.classList.remove("hidden");
+  });
+
+  //category dropdown for edit product
+  categoryDropdownForEditProduct.addEventListener("focus", async () => {
+    const selectedValue = categoryDropdownForEditProduct.value; // keep current selection
+
+    const response = await fetch("https://fabribuzz.onrender.com/api/category");
+    const catData = await response.json();
+
+    categoryDropdownForEditProduct.innerHTML = `<option value="">-- Select Category --</option>`;
+    catData.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.catName;
+      option.textContent = category.catName;
+      if (option.value === selectedValue) {
+        option.selected = true; // restore previous selection
+      }
+      categoryDropdownForEditProduct.appendChild(option);
+    });
+  });
+}
+
+//Edit Product Button
+async function updateProductFunction(event, productID) {
+  event.preventDefault();
+  loadingForEdit.classList.remove("hidden");
+  editForm.classList.add("hidden");
+  const form = editProductForm;
+  const data = {
+    name: form.name.value,
+    price: form.price.value,
+    description: form.description.value,
+    images: form.images.value,
+    stock: form.stock.value,
+    category: form.category.value,
+  };
+
+  //sent put req to api
+  const response = await fetch(
+    `https://fabribuzz.onrender.com/api/product/update/${productID}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+  loadingForEdit.classList.add("hidden");
+
+  fetchProducts();
+  allProductTable.classList.remove("hidden");
+  console.log(data);
+}
+
 //---------------------Add new category------------------
 addCategoryBtn.addEventListener("click", async function (e) {
   loadingForAddCat.classList.remove("hidden");
@@ -272,7 +424,7 @@ addCategoryBtn.addEventListener("click", async function (e) {
     catName: categoryFormData.catname.value,
     catID: categoryFormData.catid.value,
   };
-  console.log(data);
+
   if (data.catName === "" || data.catID === "") {
     alert("Please fill in all fields");
     return;
@@ -293,6 +445,16 @@ addCategoryBtn.addEventListener("click", async function (e) {
     fetchCategories();
     showSection("categories");
   }
+});
+
+//cancel button
+//stock search Cancel
+addCategoryCancel.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  addCatform.classList.add("hidden");
+  fetchCategories();
+  showSection("categories");
 });
 
 // fetch Categories
@@ -521,6 +683,16 @@ searchProductBtn.addEventListener("click", async (e) => {
   }
 });
 
+//stock search Cancel
+stockUpdateCancel.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  updateSearchProductForm.classList.add("hidden");
+  fetchProducts();
+  allProductTable.classList.remove("hidden");
+});
+
+//show div
 function showDataDiv(ID, foundData) {
   const stockUpdateDiv = document.getElementById("stockUpdateDiv");
 
