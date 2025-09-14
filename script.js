@@ -115,7 +115,6 @@ function toggleSidebar() {
 // Add new product
 const addBtn = document.getElementById("addProductBtn");
 addBtn.addEventListener("click", async function (e) {
-  loadingForAddProduct.classList.remove("hidden");
   e.preventDefault();
   const form = e.target.form;
 
@@ -149,6 +148,7 @@ addBtn.addEventListener("click", async function (e) {
     alert("Please fill in all fields");
     return;
   } else {
+    loadingForAddProduct.classList.remove("hidden");
     //console.log("All fields are filled");
 
     const response = await fetch("https://fabribuzz.onrender.com/api/product", {
