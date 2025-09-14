@@ -400,7 +400,7 @@ async function updateProductFunction(event, productID) {
   const response = await fetch(
     `https://fabribuzz.onrender.com/api/product/update/${productID}`,
     {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
