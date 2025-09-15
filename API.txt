@@ -1,0 +1,15 @@
+-----------Product-API-----------
+https://fabribuzz.onrender.com/api/product             --> (GET/POST)
+https://fabribuzz.onrender.com/api/product/:id/stock   -->  (PATCH)
+https://fabribuzz.onrender.com/api/product/update/:id  --> (PUT)
+https://fabribuzz.onrender.com/api/product/delete/:id  --> (DELETE)
+
+
+-----------Category-API-----------
+https://fabribuzz.onrender.com/api/category               --> (GET/POST)
+https://fabribuzz.onrender.com/api/category/delete/:id    --> (DELETE)
+
+
+-----------Order-API-----------
+https://fabribuzz.onrender.com/api/order               --> (GET/POST) 
+https://fabribuzz.onrender.com/api/order/status/OID    --> (PATCH)
