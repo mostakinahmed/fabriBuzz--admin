@@ -5,6 +5,7 @@ const updateSearchProductForm = document.getElementById("stock-search-form");
 const productNotFound = document.getElementById("product-not-found");
 const loadingForSearchData = document.getElementById("loadingForSearchData");
 const loadingForAddProduct = document.getElementById("loadingForAddProduct");
+const loadingOrder = document.getElementById("loadingOrder");
 const loadingForEdit = document.getElementById("loadingForEdit");
 const loadingForAddCat = document.getElementById("loadingForAddCat");
 const addCatform = document.getElementById("add-category-form");
@@ -26,6 +27,12 @@ const addNewPro_images = form.querySelector('input[name="images"]');
 const addNewPro_description = form.querySelector(
   'textarea[name="description"]'
 );
+
+//order variable
+const orderHomeSection = document.getElementById("order-home");
+const OrderView = document.getElementById("OrderView");
+
+// orderHomeSection.classList.add("hidden");
 loadingDashboard.classList.remove("hidden");
 // loadingForSearchData.classList.add("hidden");
 //feather all
@@ -61,6 +68,7 @@ function showSection(sectionId) {
     fetchProducts();
     allProductTable.classList.remove("hidden");
     editForm.classList.add("hidden");
+    const l = 99;
   }
   //fetch dashboard data when dashboard is shown
   if (sectionId === "dashboard") {
@@ -70,7 +78,23 @@ function showSection(sectionId) {
   if (sectionId === "categories") {
     fetchCategoryData();
   }
+
+  //fetch Order data when Order is shown
+  if (sectionId === "orders") {
+    orderHomeSection.classList.remove("hidden");
+    OrderView.classList.add("hidden");
+    orderHomeData();
+  }
 }
+
+// Run automatically when page loads
+document.addEventListener("DOMContentLoaded", () => {
+  fetchDashboardData();
+  fetchCategories();
+  fetchProducts();
+  orderHomeData();
+  showData(card);
+});
 
 //popup maintainer
 function showPopup() {
@@ -185,6 +209,7 @@ async function fetchProducts() {
   const response2 = await fetch("https://fabribuzz.onrender.com/api/category");
   const cData = await response2.json();
 
+  //reset  div
   productsContainer.innerHTML = "";
 
   products.forEach((product, index) => {
@@ -287,6 +312,7 @@ async function editFunction(event, productID) {
   const response = await fetch("https://fabribuzz.onrender.com/api/product");
   const products = await response.json();
   const product = products.find((p) => p._id === productID);
+
   //all product data
   editForm.classList.remove("hidden");
   allProductTable.classList.add("hidden");
@@ -504,13 +530,6 @@ async function fetchCategories() {
   });
 }
 fetchCategories(); // Run automatically when page loads
-
-// Run automatically when page loads
-document.addEventListener("DOMContentLoaded", () => {
-  fetchDashboardData();
-  fetchCategories();
-  fetchProducts();
-});
 
 //delete cat function
 async function deleteCategoryFunction(event, categoryID) {
@@ -811,3 +830,170 @@ async function stockUpdate(pID, stockValue) {
     throw new Error(`Failed to update stock: ${response.status}`);
   }
 }
+
+//-----------------Order -------------------------------------
+function backButton() {
+  OrderView.classList.add("hidden");
+  orderHomeSection.classList.remove("hidden");
+  orderHomeData();
+
+  //reset table
+  const orderTableBody = document.getElementById("orderTableBody");
+  orderTableBody.innerHTML = "";
+}
+async function orderHomeData() {
+  const totalOrder = document.querySelector("#totalOrder");
+  const todaysOrder = document.querySelector("#todaysOrder");
+  const pendingOrder = document.querySelector("#pendingOrder");
+  const shippedOrder = document.querySelector("#shippedOrder");
+  const deliveredOrder = document.querySelector("#deliveredOrder");
+  const confirmOrder = document.querySelector("#confirmOrder");
+  const cancelOrder = document.querySelector("#cancelOrder");
+
+  // data fetch
+  const response = await fetch("https://fabribuzz.onrender.com/api/order");
+  const order = await response.json();
+
+  //total order
+  const totalOrderValue = order.length;
+  totalOrder.textContent = totalOrderValue;
+
+  //today order
+  //-----------------------------------------------------------------------
+  // Get today's date in 'YYYY-MM-DD'
+  const today = new Date().toISOString().split("T")[0];
+
+  // Filter orders created today
+  const todaysData = order.filter((data) => {
+    const orderDate = new Date(data.orderDate).toISOString().split("T")[0];
+    return orderDate === today;
+  });
+  const todaysOrderValue = todaysData.length;
+  todaysOrder.textContent = todaysOrderValue;
+  //-----------------------------------------------------------------------
+
+  //pending order
+  const pendingData = order.filter((data) => data.orderStatus === "Pending");
+  const pendingOrderValue = pendingData.length;
+  pendingOrder.textContent = pendingOrderValue;
+
+  //confirm order
+  const confirmData = order.filter((data) => data.orderStatus === "Confirm");
+  const confirmOrderValue = confirmData.length;
+  confirmOrder.textContent = confirmOrderValue;
+
+  //shipped order
+  const shippedData = order.filter((data) => data.orderStatus === "Shipped");
+  const shippedOrderValue = shippedData.length;
+  shippedOrder.textContent = shippedOrderValue;
+
+  //delivered order
+  const deliveredData = order.filter(
+    (data) => data.orderStatus === "Delivered"
+  );
+  const deliveredOrderValue = deliveredData.length;
+  deliveredOrder.textContent = deliveredOrderValue;
+
+  //cancel order
+  const cancelData = order.filter((data) => data.orderStatus === "Cancel");
+  const cancelOrderValue = cancelData.length;
+  cancelOrder.textContent = cancelOrderValue;
+}
+
+//------add click on all card----------------
+function showOrder(card) {
+  loadingOrder.classList.remove("hidden");
+  orderHomeSection.classList.add("hidden");
+  showData(card);
+  OrderView.classList.remove("hidden");
+  // if (card === "todays") {
+  //   orderHomeSection.classList.add("hidden");
+  //   OrderView.classList.remove("hidden");
+  //   showData(card);
+  // }
+}
+
+//show data
+async function showData(card) {
+  // data fetch
+  const response = await fetch("https://fabribuzz.onrender.com/api/order");
+  const orders = await response.json();
+
+  let Data = [];
+
+  //separate pending
+  if (card === "pending") {
+    Data = orders.filter((data) => data.orderStatus === "Pending");
+  } else if (card === "confirm") {
+    Data = orders.filter((data) => data.orderStatus === "Confirm");
+  } else if (card === "shipped") {
+    Data = orders.filter((data) => data.orderStatus === "Shipped");
+  } else if (card === "delivered") {
+    Data = orders.filter((data) => data.orderStatus === "Delivered");
+  } else if (card === "cancel") {
+    Data = orders.filter((data) => data.orderStatus === "Cancel");
+  } else if (card === "total") {
+    Data = orders;
+  }
+
+  //different logic
+  else if (card === "todays") {
+    Data = orders.filter((data) => data.orderStatus === "Todays");
+  }
+
+  const orderTableBody = document.getElementById("orderTableBody");
+  orderTableBody.innerHTML = "";
+
+  loadingOrder.classList.add("hidden");
+  Data.forEach((element) => {
+    const orderRow = document.createElement("tr");
+    orderRow.innerHTML = `
+                      <td class="px-6 py-4">${element.OID}</td>
+                      <td class="px-6 py-4">${element.customerName}</td>
+                      <td class="px-6 py-4">
+                        <span
+                          class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800"
+                          >${element.orderStatus}</span
+                        >
+                      </td>
+                      
+ <td class="px-6 py-4 text-right">
+                        <button
+                          @click="selectedOrder = {
+                OID: 'OID00000001',
+                orderStatus: 'Pending',
+                customerName: 'Mostakin Ahmed',
+                customerEmail: 'm@dti',
+                customerPhone: '01773820336',
+                shippingAddress: 'Rajshahi',
+                paymentMethod: 'bkash',
+                pID: 'P000020',
+                productObjectID: '68c44a123e79ceac27f82379',
+                productName: 'Casio Edifice Black Dial',
+                productPrice: '5000',
+                productQuantity: '2',
+                totalPrice: '10000',
+                images: 'https://timeaccess-store.com/cdn/shop/files/EFV-620L-1AVUDFCV.webp?v=1703157750',
+                category: 'C005'
+              }; openModal = true"
+                          class="text-indigo-600 hover:text-indigo-900 font-medium"
+                        >
+                          View
+                        </button>
+                      </td>         
+  `;
+    orderTableBody.appendChild(orderRow);
+  });
+}
+//-----------ALL card Function-------------
+function showPending() {
+  console.log("pending");
+}
+function showConfirm() {
+  console.log("confirm");
+}
+function showShipped() {}
+function showDelivered() {}
+function showCancel() {}
+function showTodays() {}
+function showTotal() {}
