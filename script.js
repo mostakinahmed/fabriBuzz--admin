@@ -32,6 +32,7 @@ const addNewPro_description = form.querySelector(
 //order variable
 const orderHomeSection = document.getElementById("order-home");
 const OrderView = document.getElementById("OrderView");
+const emptyOrderMessage = document.getElementById("emptyOrderMessage");
 
 // orderHomeSection.classList.add("hidden");
 loadingDashboard.classList.remove("hidden");
@@ -43,6 +44,8 @@ function showSection(sectionId) {
   sections.forEach((id) => {
     document.getElementById(id).classList.add("hidden");
   });
+  //hide empty error message
+  emptyOrderMessage.classList.add("hidden");
 
   // Hide all product info after click in another tab
   updateSearchProductForm.classList.add("hidden");
@@ -835,6 +838,7 @@ async function stockUpdate(pID, stockValue) {
 //-----------------Order -------------------------------------
 function backButton() {
   OrderView.classList.add("hidden");
+  emptyOrderMessage.classList.add("hidden");
   orderHomeSection.classList.remove("hidden");
   orderHomeData();
 
@@ -947,9 +951,11 @@ async function showData(card) {
 
   modals.classList.remove("hidden");
   loadingOrder.classList.add("hidden");
-  Data.forEach((element) => {
-    const orderRow = document.createElement("tr");
-    orderRow.innerHTML = `
+  const len = Data.length;
+  if (len > 0) {
+    Data.forEach((element) => {
+      const orderRow = document.createElement("tr");
+      orderRow.innerHTML = `
                       <td class="px-6 py-4">${element.OID}</td>
                       <td class="px-6 py-4">${element.customerName}</td>
                       <td class="px-6 py-4">
@@ -984,8 +990,11 @@ async function showData(card) {
                         </button>
                       </td>         
   `;
-    orderTableBody.appendChild(orderRow);
-  });
+      orderTableBody.appendChild(orderRow);
+    });
+  } else {
+    emptyOrderMessage.classList.remove("hidden");
+  }
 }
 
 //-----------ALL card Function-------------

@@ -1045,6 +1045,46 @@
           </div>
         </section>
         <!--  -->
+        <!-- Show this when orders array is empty -->
+        <section>
+          <div
+            class="flex flex-col items-center justify-center py-16 hidden"
+            id="emptyOrderMessage"
+          >
+            <div
+              class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm p-8 text-center max-w-md w-full"
+            >
+              <!-- optional icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-12 w-12 text-gray-400 mx-auto mb-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8c-3.866 0-7 3.134-7 7h14c0-3.866-3.134-7-7-7z"
+                />
+              </svg>
+
+              <h3 class="text-lg font-semibold text-gray-800">No Orders Yet</h3>
+              <p class="mt-2 text-sm text-gray-500">
+                You don’t have any orders at the moment. New orders will show up
+                here.
+              </p>
+
+              <button
+                onclick="backButton()"
+                class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        </section>
         <!--  -->
         <!------------------ Users section----------------------------->
         <section id="users" class="hidden">
