@@ -14,6 +14,8 @@ const addCategoryCancel = document.getElementById("addCategoryCancel");
 const addProductCancel = document.getElementById("addProductCancel");
 const stockUpdateCancel = document.getElementById("stockUpdateCancel");
 const addCategoryBtn = document.getElementById("addCategoryBtn");
+const dashboard = document.getElementById("dashboard");
+const charts = document.getElementById("charts");
 const editProductForm = document.getElementById("editProductForm");
 const catListForm = document.getElementById("catList");
 const allProductTable = document.getElementById("allProductTable");
@@ -34,9 +36,7 @@ const orderHomeSection = document.getElementById("order-home");
 const OrderView = document.getElementById("OrderView");
 const emptyOrderMessage = document.getElementById("emptyOrderMessage");
 
-// orderHomeSection.classList.add("hidden");
 loadingDashboard.classList.remove("hidden");
-// loadingForSearchData.classList.add("hidden");
 //feather all
 feather.replace();
 function showSection(sectionId) {
@@ -44,8 +44,16 @@ function showSection(sectionId) {
   sections.forEach((id) => {
     document.getElementById(id).classList.add("hidden");
   });
+
   //hide empty error message
   emptyOrderMessage.classList.add("hidden");
+  OrderView.classList.add("hidden");
+
+  const orderTableBody = document.getElementById("orderTableBody");
+  orderTableBody.innerHTML = "";
+
+  //hide always chart
+  charts.classList.add("hidden");
 
   // Hide all product info after click in another tab
   updateSearchProductForm.classList.add("hidden");
@@ -76,6 +84,7 @@ function showSection(sectionId) {
   }
   //fetch dashboard data when dashboard is shown
   if (sectionId === "dashboard") {
+    charts.classList.remove("hidden");
     fetchDashboardData();
   }
   //fetch category data when category is shown
@@ -577,21 +586,23 @@ async function deleteCategoryFunction(event, categoryID) {
 
 //fetch dashboard data
 async function fetchDashboardData() {
-  const dashboard = document.getElementById("dashboard");
-
-  //product count
+  //product fetch and count
   const response = await fetch("https://fabribuzz.onrender.com/api/product");
   const pData = await response.json();
+  ///cat fetch and count
   const catResponse = await fetch(
     "https://fabribuzz.onrender.com/api/category"
   );
   const cData = await catResponse.json();
+  //order fetch and count
+  const orderResponse = await fetch("https://fabribuzz.onrender.com/api/order");
+  const oData = await orderResponse.json();
 
   catCount = cData.length;
   countProduct = pData.length;
+  let countOrder = oData.length;
 
   // Update dashboard elements
-  // You can also update charts or other dashboard elements here
   dashboard.innerHTML = ""; //reset dashboard content
   dashboard.innerHTML = `
      <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
@@ -600,7 +611,7 @@ async function fetchDashboardData() {
             <div class="bg-gradient-to-r from-green-400 to-emerald-600 p-6 rounded-2xl shadow-lg transform transition duration-300 hover:scale-105">
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-white/80 text-sm font-medium">Total Products</h2>
+      <h2 class="text-white/80 text-md font-medium">Total Products</h2>
       <p class="text-3xl font-extrabold text-white mt-2">${countProduct}</p>
     </div>
     <div class="bg-white/20 p-3 rounded-full">
@@ -615,7 +626,7 @@ async function fetchDashboardData() {
             <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 rounded-2xl shadow-lg transform transition duration-300 hover:scale-105">
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-white/80 text-sm font-medium">Total Categories</h2>
+      <h2 class="text-white/80 text-md font-medium">Total Categories</h2>
       <p class="text-3xl font-extrabold text-white mt-2">${catCount}</p>
     </div>
     <div class="bg-white/20 p-3 rounded-full">
@@ -626,21 +637,84 @@ async function fetchDashboardData() {
   </div>
 </div>
 
-            <div
-              class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 class="text-gray-500">Total Orders</h2>
-              <p class="text-2xl font-bold mt-2">0</p>
-            </div>
-            <div
-              class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 class="text-gray-500">Total Users</h2>
-              <p class="text-2xl font-bold mt-2">0</p>
-            </div>
-            
-          </div>
+<div class="bg-gradient-to-r from-blue-500 to-cyan-500 p-6 rounded-2xl shadow-lg transform transition duration-300 hover:scale-105">
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-white/80 text-md font-medium">Total Order</h2>
+      <p class="text-3xl font-extrabold text-white mt-2">${countOrder}</p>
+    </div>
+    <div class="bg-white/20 p-3 rounded-full">
+      <!-- icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V7a2 2 0 00-2-2h-4l-2-2H8a2 2 0 00-2 2v6" />
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="bg-gradient-to-r from-pink-500 to-rose-500 p-6 rounded-2xl shadow-lg transform transition duration-300 hover:scale-105">
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-white/80 text-md font-medium">Pending Orders</h2>
+      <p class="text-3xl font-extrabold text-white mt-2">21</p>
+    </div>
+    <div class="bg-white/20 p-3 rounded-full">
+      <!-- icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 4h10v10H7V7z" />
+      </svg>
+    </div>
+  </div>
+</div>
+
   `;
+
+  charts.innerHTML = "";
+  charts.innerHTML = `
+   <div class="bg-white p-6 rounded-2xl shadow-lg">
+            <h2 class="text-xl font-semibold mb-4">Orders Overview</h2>
+
+            <!-- Chart wrapper with fixed height -->
+            <div class="relative h-64">
+              <!-- h-64 = 16rem (256px) -->
+              <canvas id="ordersChart"></canvas>
+            </div>
+          </div>`;
+
+  //bellow code for showing chart in dashboard
+  const ctx = document.getElementById("ordersChart").getContext("2d");
+  const ordersChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Jan", "Feb", "Mar"],
+      datasets: [
+        {
+          label: "Pending",
+          data: [5, 8, 4],
+          backgroundColor: "rgba(255,206,86,0.6)",
+          borderRadius: 6,
+        },
+        {
+          label: "Completed",
+          data: [3, 6, 7],
+          backgroundColor: "rgba(75,192,192,0.6)",
+          borderRadius: 6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // very important for custom height
+      plugins: {
+        legend: { position: "top" },
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: "#E5E7EB" } },
+      },
+    },
+  });
+
   loadingDashboard.classList.add("hidden");
 }
 
@@ -911,11 +985,6 @@ function showOrder(card) {
   orderHomeSection.classList.add("hidden");
   showData(card);
   OrderView.classList.remove("hidden");
-  // if (card === "todays") {
-  //   orderHomeSection.classList.add("hidden");
-  //   OrderView.classList.remove("hidden");
-  //   showData(card);
-  // }
 }
 
 //show data
@@ -939,11 +1008,21 @@ async function showData(card) {
     Data = orders.filter((data) => data.orderStatus === "Cancel");
   } else if (card === "total") {
     Data = orders;
-  }
+  } else if (card === "todays") {
+    //today order
+    //-----------------------------------------------------------------------
+    // Get todays date in 'YYYY-MM-DD'
+    const today = new Date().toISOString().split("T")[0];
 
-  //different logic
-  else if (card === "todays") {
-    Data = orders.filter((data) => data.orderStatus === "Todays");
+    // Filter orders created today
+    const todaysData = orders.filter((data) => {
+      const orderDate = new Date(data.orderDate).toISOString().split("T")[0];
+      return orderDate === today;
+    });
+    const todaysOrderValue = todaysData.length;
+    todaysOrder.textContent = todaysOrderValue;
+    //-----------------------------------------------------------------------
+    Data = todaysData;
   }
 
   const orderTableBody = document.getElementById("orderTableBody");
