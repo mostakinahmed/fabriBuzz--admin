@@ -35,6 +35,7 @@ const addNewPro_description = form.querySelector(
 const orderHomeSection = document.getElementById("order-home");
 const OrderView = document.getElementById("OrderView");
 const emptyOrderMessage = document.getElementById("emptyOrderMessage");
+const orderConfirmButton = document.getElementById("orderConfirmButton");
 
 loadingDashboard.classList.remove("hidden");
 //feather all
@@ -920,6 +921,8 @@ function backButton() {
   const orderTableBody = document.getElementById("orderTableBody");
   orderTableBody.innerHTML = "";
 }
+
+//order home data
 async function orderHomeData() {
   const totalOrder = document.querySelector("#totalOrder");
   const todaysOrder = document.querySelector("#todaysOrder");
@@ -1032,9 +1035,10 @@ async function showData(card) {
   loadingOrder.classList.add("hidden");
   const len = Data.length;
   if (len > 0) {
-    Data.forEach((element) => {
+    Data.forEach((element, sn) => {
       const orderRow = document.createElement("tr");
       orderRow.innerHTML = `
+                      <td class="px-6 py-4">${sn + 1}</td>
                       <td class="px-6 py-4">${element.OID}</td>
                       <td class="px-6 py-4">${element.customerName}</td>
                       <td class="px-6 py-4">
@@ -1048,20 +1052,20 @@ async function showData(card) {
                         <button
                           @click="selectedOrder = {
                 OID: '${element.OID}',
-                orderStatus: 'Pending',
-                customerName: 'Mostakin Ahmed',
-                customerEmail: 'm@dti',
-                customerPhone: '01773820336',
-                shippingAddress: 'Rajshahi',
-                paymentMethod: 'bkash',
-                pID: 'P000020',
-                productObjectID: '68c44a123e79ceac27f82379',
-                productName: 'Casio Edifice Black Dial',
-                productPrice: '5000',
-                productQuantity: '2',
-                totalPrice: '10000',
-                images: 'https://timeaccess-store.com/cdn/shop/files/EFV-620L-1AVUDFCV.webp?v=1703157750',
-                category: 'C005'
+                orderStatus: '${element.orderStatus}',
+                customerName: '${element.customerName}',
+                customerEmail: '${element.customerEmail}',
+                customerPhone: '${element.customerPhone}',
+                shippingAddress: '${element.shippingAddress}',
+                paymentMethod: '${element.paymentMethod}',
+                pID: '${element.pID}',
+                productObjectID: '${element.productObjectID}',
+                productName: '${element.productName}',
+                productPrice: '${element.productPrice}',
+                productQuantity: '${element.productQuantity}',
+                totalPrice: '${element.totalPrice}',
+                images: '${element.images}',
+                category: '${element.category}'
               }; openModal = true"
                           class="text-indigo-600 hover:text-indigo-900 font-medium"
                         >
@@ -1070,21 +1074,26 @@ async function showData(card) {
                       </td>         
   `;
       orderTableBody.appendChild(orderRow);
+
+      //-----------ALL card Function-------------
+      orderConfirmButton.addEventListener("click", async (e) => {
+        e.preventDefault();
+        console.log("confirm");
+
+        //req send to api
+        const response = await fetch(
+          `https://fabribuzz.onrender.com/api/order/status/${element.OID}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify("Confirm"),
+          }
+        );
+      });
     });
   } else {
     emptyOrderMessage.classList.remove("hidden");
   }
 }
-
-//-----------ALL card Function-------------
-function showPending() {
-  console.log("pending");
-}
-function showConfirm() {
-  console.log("confirm");
-}
-function showShipped() {}
-function showDelivered() {}
-function showCancel() {}
-function showTodays() {}
-function showTotal() {}
