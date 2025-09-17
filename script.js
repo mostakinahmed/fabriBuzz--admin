@@ -1,5 +1,6 @@
 //variable
 const searchProductBtn = document.getElementById("search-product-btn");
+const modals = document.getElementById("modals");
 const stockUpdateDiv = document.getElementById("stockUpdateDiv");
 const updateSearchProductForm = document.getElementById("stock-search-form");
 const productNotFound = document.getElementById("product-not-found");
@@ -944,6 +945,7 @@ async function showData(card) {
   const orderTableBody = document.getElementById("orderTableBody");
   orderTableBody.innerHTML = "";
 
+  modals.classList.remove("hidden");
   loadingOrder.classList.add("hidden");
   Data.forEach((element) => {
     const orderRow = document.createElement("tr");
@@ -960,7 +962,7 @@ async function showData(card) {
  <td class="px-6 py-4 text-right">
                         <button
                           @click="selectedOrder = {
-                OID: 'OID00000001',
+                OID: '${element.OID}',
                 orderStatus: 'Pending',
                 customerName: 'Mostakin Ahmed',
                 customerEmail: 'm@dti',
@@ -985,6 +987,7 @@ async function showData(card) {
     orderTableBody.appendChild(orderRow);
   });
 }
+
 //-----------ALL card Function-------------
 function showPending() {
   console.log("pending");
