@@ -949,25 +949,20 @@
               </div>
             </section>
           </div>
+        </section>
 
-          <!-- Modal -->
-          <div
-            x-show="openModal"
-            x-cloak
-            class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden"
-            id="modals"
-          >
-            <div
-              @click.away="openModal = false"
-              class="bg-white w-full sm:max-w-xl md:max-w-3xl rounded-lg shadow-lg overflow-hidden max-h-screen overflow-y-auto"
-            >
-              <div class="flex flex-col md:flex-row" id="modalInfo">
+        <!-- product info for order view -->
+        <section>
+          <div class="max-w-4xl mx-auto p-6 hidden" id="viewOrderProduct">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div class="flex flex-col md:flex-row">
                 <!-- Product Image -->
                 <div
                   class="md:w-1/2 bg-gray-100 p-4 flex justify-center items-center"
                 >
                   <img
-                    :src="selectedOrder?.images"
+                    id="orderImage"
+                    src="https://via.placeholder.com/400x300"
                     alt="Product"
                     class="w-full max-h-80 object-contain rounded-md"
                   />
@@ -976,64 +971,67 @@
                 <!-- Info Section -->
                 <div class="md:w-1/2 p-6 space-y-4">
                   <h2
+                    id="orderProductName"
                     class="text-xl font-semibold text-gray-800 mb-2"
-                    x-text="selectedOrder?.productName"
-                  ></h2>
+                  >
+                    Product Name Here
+                  </h2>
 
                   <div class="text-sm text-gray-600 space-y-1">
                     <p>
                       <strong>Order ID:</strong>
-                      <span x-text="selectedOrder?.OID"></span>
+                      <span id="orderId">P0000001</span>
                     </p>
                     <p>
                       <strong>Status:</strong>
                       <span
-                        x-text="selectedOrder?.orderStatus"
-                        class="bg-red-600 rounded-full pl-2 pr-2 text-white"
-                      ></span>
+                        id="orderStatus"
+                        class="bg-yellow-500 rounded-full px-2 py-0.5 text-white text-xs font-semibold"
+                        >Pending</span
+                      >
                     </p>
                     <p>
                       <strong>Customer:</strong>
-                      <span x-text="selectedOrder?.customerName"></span>
+                      <span id="customerName">John Doe</span>
                     </p>
                     <p>
                       <strong>Email:</strong>
-                      <span x-text="selectedOrder?.customerEmail"></span>
+                      <span id="customerEmail">john@example.com</span>
                     </p>
                     <p>
                       <strong>Phone:</strong>
-                      <span x-text="selectedOrder?.customerPhone"></span>
+                      <span id="customerPhone">+880123456789</span>
                     </p>
                     <p>
                       <strong>Shipping Address:</strong>
-                      <span x-text="selectedOrder?.shippingAddress"></span>
+                      <span id="shippingAddress">123 Street, Dhaka</span>
                     </p>
                     <p>
                       <strong>Payment Method:</strong>
-                      <span x-text="selectedOrder?.paymentMethod"></span>
+                      <span id="paymentMethod">Cash on Delivery</span>
                     </p>
                   </div>
 
                   <div class="border-t pt-4">
                     <p class="text-sm">
                       <strong>Product ID:</strong>
-                      <span x-text="selectedOrder?.pID"></span>
+                      <span id="productId">PID12345</span>
                     </p>
                     <p class="text-sm">
-                      <strong>Categoty:</strong>
-                      <span x-text="selectedOrder?.category"></span>
+                      <strong>Category:</strong>
+                      <span id="productCategory">Electronics</span>
                     </p>
                     <p class="text-sm">
                       <strong>Quantity:</strong>
-                      <span x-text="selectedOrder?.productQuantity"></span>
+                      <span id="productQuantity">2</span>
                     </p>
                     <p class="text-sm">
-                      <strong>Price:</strong> ৳<span
-                        x-text="selectedOrder?.productPrice"
-                      ></span>
+                      <strong>Price:</strong> ৳<span id="productPrice"
+                        >1500</span
+                      >
                     </p>
                     <p class="text-md font-semibold text-gray-800">
-                      Total: ৳<span x-text="selectedOrder?.totalPrice"></span>
+                      Total: ৳<span id="totalPrice">3000</span>
                     </p>
                   </div>
 
@@ -1042,21 +1040,20 @@
                     class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4"
                   >
                     <button
+                      id="closeBtn"
                       class="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-                      @click="openModal = false"
                     >
                       Close
                     </button>
                     <button
+                      id="cancelBtn"
                       class="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                      id="orderCancelButton"
-                      @click="alert('Order Cancel!'); openModal = false"
                     >
                       Cancel Order
                     </button>
                     <button
+                      id="confirmBtn"
                       class="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
-                      id="orderConfirmButton"
                     >
                       Confirm Order
                     </button>
@@ -1066,6 +1063,7 @@
             </div>
           </div>
         </section>
+
         <!--  -->
         <!-- Show this when orders array is empty -->
         <section>
@@ -1107,6 +1105,7 @@
             </div>
           </div>
         </section>
+
         <!--  -->
         <!------------------ Users section----------------------------->
         <section id="users" class="hidden">

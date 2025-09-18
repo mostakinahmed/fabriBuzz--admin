@@ -1,6 +1,6 @@
 //variable
 const searchProductBtn = document.getElementById("search-product-btn");
-const modals = document.getElementById("modals");
+// const modals = document.getElementById("modals");
 const stockUpdateDiv = document.getElementById("stockUpdateDiv");
 const updateSearchProductForm = document.getElementById("stock-search-form");
 const productNotFound = document.getElementById("product-not-found");
@@ -36,6 +36,7 @@ const orderHomeSection = document.getElementById("order-home");
 const OrderView = document.getElementById("OrderView");
 const emptyOrderMessage = document.getElementById("emptyOrderMessage");
 const orderConfirmButton = document.getElementById("orderConfirmButton");
+const viewOrderInfo = document.getElementById("viewOrderProduct");
 
 loadingDashboard.classList.remove("hidden");
 //feather all
@@ -995,7 +996,6 @@ async function showData(card) {
   // data fetch
   const response = await fetch("https://fabribuzz.onrender.com/api/order");
   const orders = await response.json();
-
   let Data = [];
 
   //separate pending
@@ -1031,7 +1031,7 @@ async function showData(card) {
   const orderTableBody = document.getElementById("orderTableBody");
   orderTableBody.innerHTML = "";
 
-  modals.classList.remove("hidden");
+  // modals.classList.remove("hidden");
   loadingOrder.classList.add("hidden");
   const len = Data.length;
   if (len > 0) {
@@ -1049,64 +1049,106 @@ async function showData(card) {
                       </td>
                       
  <td class="px-6 py-4 text-right">
-                        <button
-                          @click="selectedOrder = {
-                OID: '${element.OID}',
-                orderStatus: '${element.orderStatus}',
-                customerName: '${element.customerName}',
-                customerEmail: '${element.customerEmail}',
-                customerPhone: '${element.customerPhone}',
-                shippingAddress: '${element.shippingAddress}',
-                paymentMethod: '${element.paymentMethod}',
-                pID: '${element.pID}',
-                productObjectID: '${element.productObjectID}',
-                productName: '${element.productName}',
-                productPrice: '${element.productPrice}',
-                productQuantity: '${element.productQuantity}',
-                totalPrice: '${element.totalPrice}',
-                images: '${element.images}',
-                category: '${element.category}'
-              }; openModal = true"
-                          class="text-indigo-600 hover:text-indigo-900 font-medium"
-                        >
-                          View
-                        </button>
+                         <button
+    class="text-indigo-600 hover:text-indigo-900 font-medium"
+    onclick='viewAction(${JSON.stringify(JSON.stringify(element))})'>
+    View
+  </button>
                       </td>         
   `;
       orderTableBody.appendChild(orderRow);
+      // const viewBtn = document.getElementById("viewBtn");
+      // viewBtn.addEventListener("click", (e) => {
+      //   e.preventDefault();
+      //   console.log(element.OID);
+      // });
 
-      //-----------ALL card Function-------------
-      orderConfirmButton.addEventListener("click", async (e) => {
-        e.preventDefault();
-        console.log("confirm");
-        console.log(element.OID);
+      // //-----------ALL card Function-------------
+      // orderConfirmButton.addEventListener("click", async (e) => {
+      //   e.preventDefault();
+      //   console.log("confirm");
+      //   console.log(element.OID);
 
-        // inside an async function
-        try {
-          const response = await fetch(
-            `https://fabribuzz.onrender.com/api/order/status/${element.OID}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ status: "Confirm" }),
-            }
-          );
+      // // inside an async function
+      // try {
+      //   const response = await fetch(
+      //     `https://fabribuzz.onrender.com/api/order/status/${element.OID}`,
+      //     {
+      //       method: "PATCH",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({ status: "Confirm" }),
+      //     }
+      //   );
 
-          if (!response.ok) {
-            const errData = await response.json();
-            console.error("Server error:", errData);
-          } else {
-            const data = await response.json();
-            console.log("Updated order:", data);
-          }
-        } catch (error) {
-          console.error("Network error:", error);
-        }
-      });
+      //   if (!response.ok) {
+      //     const errData = await response.json();
+      //     console.error("Server error:", errData);
+      //   } else {
+      //     const data = await response.json();
+      //     console.log("Updated order:", data);
+      //   }
+      // } catch (error) {
+      //   console.error("Network error:", error);
+      // }
+      // });
     });
   } else {
     emptyOrderMessage.classList.remove("hidden");
   }
 }
+
+// container section
+//const viewOrderProduct = document.getElementById("viewOrderProduct");
+
+// image + text fields
+const orderImage = document.getElementById("orderImage");
+const orderProductName = document.getElementById("orderProductName");
+const orderId = document.getElementById("orderId");
+const orderStatus = document.getElementById("orderStatus");
+const customerName = document.getElementById("customerName");
+const customerEmail = document.getElementById("customerEmail");
+const customerPhone = document.getElementById("customerPhone");
+const shippingAddress = document.getElementById("shippingAddress");
+const paymentMethod = document.getElementById("paymentMethod");
+const productId = document.getElementById("productId");
+const productCategory = document.getElementById("productCategory");
+const productQuantity = document.getElementById("productQuantity");
+const productPrice = document.getElementById("productPrice");
+const totalPrice = document.getElementById("totalPrice");
+
+// buttons
+const closeBtn = document.getElementById("closeBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+const confirmBtn = document.getElementById("confirmBtn");
+
+function viewAction(orderData) {
+  const order = JSON.parse(orderData); // back to object
+
+  orderImage.src = order.images;
+  orderProductName.textContent = order.productName;
+  orderId.textContent = order.OID;
+  orderStatus.textContent = order.orderStatus;
+  customerName.textContent = order.customerName;
+  customerEmail.textContent = order.customerEmail;
+  customerPhone.textContent = order.customerPhone;
+  shippingAddress.textContent = order.shippingAddress;
+  paymentMethod.textContent = order.paymentMethod;
+  productId.textContent = order.pID;
+  productCategory.textContent = order.category;
+  productQuantity.textContent = order.productQuantity;
+  productPrice.textContent = order.productPrice;
+  totalPrice.textContent = order.totalPrice;
+
+  // show the section
+  OrderView.classList.add("hidden");
+  viewOrderProduct.classList.remove("hidden");
+
+  console.log(order);
+}
+
+closeBtn.addEventListener("click", () => {
+  viewOrderProduct.classList.add("hidden");
+  OrderView.classList.remove("hidden");
+});
