@@ -1079,18 +1079,31 @@ async function showData(card) {
       orderConfirmButton.addEventListener("click", async (e) => {
         e.preventDefault();
         console.log("confirm");
+        console.log(element.OID);
 
-        //req send to api
-        const response = await fetch(
-          `https://fabribuzz.onrender.com/api/order/status/${element.OID}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify("Confirm"),
+        // inside an async function
+        try {
+          const response = await fetch(
+            `https://fabribuzz.onrender.com/api/order/status/${element.OID}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status: "Confirm" }),
+            }
+          );
+
+          if (!response.ok) {
+            const errData = await response.json();
+            console.error("Server error:", errData);
+          } else {
+            const data = await response.json();
+            console.log("Updated order:", data);
           }
-        );
+        } catch (error) {
+          console.error("Network error:", error);
+        }
       });
     });
   } else {
