@@ -37,6 +37,9 @@ const OrderView = document.getElementById("OrderView");
 const emptyOrderMessage = document.getElementById("emptyOrderMessage");
 const orderConfirmButton = document.getElementById("orderConfirmButton");
 const viewOrderInfo = document.getElementById("viewOrderProduct");
+const cancelBtn = document.getElementById("cancelBtn");
+const confirmBtn = document.getElementById("confirmBtn");
+const loadingOrder2 = document.getElementById("loadingOrder2");
 
 loadingDashboard.classList.remove("hidden");
 //feather all
@@ -50,6 +53,7 @@ function showSection(sectionId) {
   //hide empty error message
   emptyOrderMessage.classList.add("hidden");
   OrderView.classList.add("hidden");
+  viewOrderProduct.classList.add("hidden");
 
   const orderTableBody = document.getElementById("orderTableBody");
   orderTableBody.innerHTML = "";
@@ -74,6 +78,7 @@ function showSection(sectionId) {
   //hide all cat data
   addCatform.classList.add("hidden");
   catListForm.classList.remove("hidden"); //show this section when other section is active
+
   //only show the selected section
   document.getElementById(sectionId).classList.remove("hidden");
 
@@ -914,6 +919,7 @@ async function stockUpdate(pID, stockValue) {
 //-----------------Order -------------------------------------
 function backButton() {
   OrderView.classList.add("hidden");
+  viewOrderProduct.classList.add("hidden");
   emptyOrderMessage.classList.add("hidden");
   orderHomeSection.classList.remove("hidden");
   orderHomeData();
@@ -985,6 +991,7 @@ async function orderHomeData() {
 
 //------add click on all card----------------
 function showOrder(card) {
+  loadingOrder2.classList.add("hidden");
   loadingOrder.classList.remove("hidden");
   orderHomeSection.classList.add("hidden");
   showData(card);
@@ -1057,42 +1064,6 @@ async function showData(card) {
                       </td>         
   `;
       orderTableBody.appendChild(orderRow);
-      // const viewBtn = document.getElementById("viewBtn");
-      // viewBtn.addEventListener("click", (e) => {
-      //   e.preventDefault();
-      //   console.log(element.OID);
-      // });
-
-      // //-----------ALL card Function-------------
-      // orderConfirmButton.addEventListener("click", async (e) => {
-      //   e.preventDefault();
-      //   console.log("confirm");
-      //   console.log(element.OID);
-
-      // // inside an async function
-      // try {
-      //   const response = await fetch(
-      //     `https://fabribuzz.onrender.com/api/order/status/${element.OID}`,
-      //     {
-      //       method: "PATCH",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({ status: "Confirm" }),
-      //     }
-      //   );
-
-      //   if (!response.ok) {
-      //     const errData = await response.json();
-      //     console.error("Server error:", errData);
-      //   } else {
-      //     const data = await response.json();
-      //     console.log("Updated order:", data);
-      //   }
-      // } catch (error) {
-      //   console.error("Network error:", error);
-      // }
-      // });
     });
   } else {
     emptyOrderMessage.classList.remove("hidden");
@@ -1117,11 +1088,10 @@ const productCategory = document.getElementById("productCategory");
 const productQuantity = document.getElementById("productQuantity");
 const productPrice = document.getElementById("productPrice");
 const totalPrice = document.getElementById("totalPrice");
+const multipleActionBtn = document.getElementById("multipleActionBtn");
 
 // buttons
 const closeBtn = document.getElementById("closeBtn");
-const cancelBtn = document.getElementById("cancelBtn");
-const confirmBtn = document.getElementById("confirmBtn");
 
 function viewAction(orderData) {
   const order = JSON.parse(orderData); // back to object
@@ -1140,15 +1110,70 @@ function viewAction(orderData) {
   productQuantity.textContent = order.productQuantity;
   productPrice.textContent = order.productPrice;
   totalPrice.textContent = order.totalPrice;
+  confirmBtn.dataset.oid = order.OID;
+  confirmBtn.dataset.currStatus = order.orderStatus;
+
+  // //action btn name management
+  if (order.orderStatus === "Pending") {
+    multipleActionBtn.textContent = "Confirm";
+    confirmBtn.dataset.status = "Confirm";
+  } else if (order.orderStatus === "Confirm") {
+    //  cancelBtn.classList.add("hidden");
+    multipleActionBtn.textContent = "Shipped";
+    confirmBtn.dataset.status = "Shipped";
+  } else if (order.orderStatus === "Shipped") {
+    multipleActionBtn.textContent = "Delivered";
+    confirmBtn.dataset.status = "Delivered";
+  } else if (order.orderStatus === "Delivered") {
+    // cancelBtn.classList.add("hidden");
+    // confirmBtn.classList.add("hidden");
+  }
 
   // show the section
   OrderView.classList.add("hidden");
   viewOrderProduct.classList.remove("hidden");
-
-  console.log(order);
+  loadingOrder2.classList.remove("hidden");
 }
 
 closeBtn.addEventListener("click", () => {
   viewOrderProduct.classList.add("hidden");
   OrderView.classList.remove("hidden");
+});
+
+//confirm btn
+confirmBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  viewOrderProduct.classList.add("hidden");
+  loadingOrder2.classList.remove("hidden");
+  let newStatus = confirmBtn.dataset.status;
+  let oid = confirmBtn.dataset.oid;
+  let currStatus = confirmBtn.dataset.currStatus;
+
+  // // inside an async function
+  try {
+    const response = await fetch(
+      `https://fabribuzz.onrender.com/api/order/status/${oid}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      }
+    );
+
+    if (!response.ok) {
+      const errData = await response.json();
+      console.error("Server error:", errData);
+    } else {
+      let cSts = currStatus.toLowerCase();
+      showOrder(cSts);
+      loadingOrder2.classList.add("hidden");
+      OrderView.classList.remove("hidden");
+      const data = await response.json();
+      console.log("Updated order:", data);
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+  }
 });
