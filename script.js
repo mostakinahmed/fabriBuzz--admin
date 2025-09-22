@@ -1152,7 +1152,7 @@ function viewAction(orderData) {
   // show the section
   OrderView.classList.add("hidden");
   viewOrderProduct.classList.remove("hidden");
-  loadingOrder2.classList.remove("hidden");
+  loadingOrder2.classList.add("hidden");
 }
 
 closeBtn.addEventListener("click", () => {
