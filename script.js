@@ -922,6 +922,7 @@ function backButton() {
   viewOrderProduct.classList.add("hidden");
   emptyOrderMessage.classList.add("hidden");
   orderHomeSection.classList.remove("hidden");
+  loadingOrder2.classList.add("hidden");
   orderHomeData();
 
   //reset table
@@ -1112,6 +1113,8 @@ function viewAction(orderData) {
   totalPrice.textContent = order.totalPrice;
   confirmBtn.dataset.oid = order.OID;
   confirmBtn.dataset.currStatus = order.orderStatus;
+  cancelBtn.dataset.oid = order.OID;
+  cancelBtn.dataset.currStatus = order.orderStatus;
 
   // //action btn name management
   if (order.orderStatus === "Pending") {
@@ -1124,10 +1127,27 @@ function viewAction(orderData) {
   } else if (order.orderStatus === "Shipped") {
     multipleActionBtn.textContent = "Delivered";
     confirmBtn.dataset.status = "Delivered";
-  } else if (order.orderStatus === "Delivered") {
-    // cancelBtn.classList.add("hidden");
-    // confirmBtn.classList.add("hidden");
   }
+
+  //auto enable button
+  confirmBtn.classList.remove("hidden");
+  cancelBtn.classList.remove("hidden");
+  if (order.orderStatus === "Delivered") {
+    cancelBtn.classList.add("hidden");
+    confirmBtn.classList.add("hidden");
+  }
+
+  //auto enable
+  // confirmBtn.classList.remove("hidden");
+  // cancelBtn.classList.remove("hidden");
+  // //current date
+  // const todayDate = new Date().toISOString().split("T")[0];
+  // // Filter orders created today
+  // const orderDate = new Date(order.orderDate).toISOString().split("T")[0];
+  // if (orderDate === todayDate) {
+  //   confirmBtn.classList.add("hidden");
+  //   cancelBtn.classList.add("hidden");
+  // }
 
   // show the section
   OrderView.classList.add("hidden");
@@ -1150,6 +1170,43 @@ confirmBtn.addEventListener("click", async (e) => {
   let oid = confirmBtn.dataset.oid;
   let currStatus = confirmBtn.dataset.currStatus;
 
+  // // inside an async function
+  try {
+    const response = await fetch(
+      `https://fabribuzz.onrender.com/api/order/status/${oid}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      }
+    );
+
+    if (!response.ok) {
+      const errData = await response.json();
+      console.error("Server error:", errData);
+    } else {
+      let cSts = currStatus.toLowerCase();
+      showOrder(cSts);
+      loadingOrder2.classList.add("hidden");
+      OrderView.classList.remove("hidden");
+      const data = await response.json();
+      console.log("Updated order:", data);
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+});
+
+//confirm btn
+cancelBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  viewOrderProduct.classList.add("hidden");
+  loadingOrder2.classList.remove("hidden");
+  let newStatus = "Cancel";
+  let oid = cancelBtn.dataset.oid;
+  let currStatus = cancelBtn.dataset.currStatus;
   // // inside an async function
   try {
     const response = await fetch(
