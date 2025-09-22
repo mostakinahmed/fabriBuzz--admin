@@ -1116,6 +1116,10 @@ function viewAction(orderData) {
   cancelBtn.dataset.oid = order.OID;
   cancelBtn.dataset.currStatus = order.orderStatus;
 
+  //auto enable button
+  confirmBtn.classList.remove("hidden");
+  cancelBtn.classList.remove("hidden");
+
   // //action btn name management
   if (order.orderStatus === "Pending") {
     multipleActionBtn.textContent = "Confirm";
@@ -1129,14 +1133,15 @@ function viewAction(orderData) {
     confirmBtn.dataset.status = "Delivered";
   }
 
-  //auto enable button
-  confirmBtn.classList.remove("hidden");
-  cancelBtn.classList.remove("hidden");
   if (order.orderStatus === "Delivered") {
     cancelBtn.classList.add("hidden");
     confirmBtn.classList.add("hidden");
   }
 
+  if (order.orderStatus === "Cancel") {
+    cancelBtn.classList.add("hidden");
+    confirmBtn.classList.add("hidden");
+  }
   //auto enable
   // confirmBtn.classList.remove("hidden");
   // cancelBtn.classList.remove("hidden");
