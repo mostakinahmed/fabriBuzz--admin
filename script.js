@@ -1138,6 +1138,7 @@ function viewAction(orderData) {
 closeBtn.addEventListener("click", () => {
   viewOrderProduct.classList.add("hidden");
   OrderView.classList.remove("hidden");
+  loadingOrder2.classList.add("hidden");
 });
 
 //confirm btn
