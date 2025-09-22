@@ -605,6 +605,10 @@ async function fetchDashboardData() {
   const orderResponse = await fetch("https://fabribuzz.onrender.com/api/order");
   const oData = await orderResponse.json();
 
+  //pending order list
+  const pendingData = oData.filter((data) => data.orderStatus === "Pending");
+  const pendingOrderValue = pendingData.length;
+
   catCount = cData.length;
   countProduct = pData.length;
   let countOrder = oData.length;
@@ -663,7 +667,7 @@ async function fetchDashboardData() {
   <div class="flex items-center justify-between">
     <div>
       <h2 class="text-white/80 text-md font-medium">Pending Orders</h2>
-      <p class="text-3xl font-extrabold text-white mt-2">21</p>
+      <p class="text-3xl font-extrabold text-white mt-2" id="pendingOrderDashboard">${pendingOrderValue}</p>
     </div>
     <div class="bg-white/20 p-3 rounded-full">
       <!-- icon -->
