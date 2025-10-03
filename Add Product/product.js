@@ -1,4 +1,6 @@
-// window.location.href = window.location.href + "#top";
+const loader = document.getElementById("loader");
+const form = document.getElementById("full-form");
+
 //category dropdown
 categoryDropdown.addEventListener("focus", async () => {
   const selectedValue = categoryDropdown.value; // keep current selection
@@ -19,16 +21,18 @@ categoryDropdown.addEventListener("focus", async () => {
 });
 
 document.getElementById("productForm").addEventListener("submit", function (e) {
+  form.classList.add("hidden");
+  loader.classList.remove("hidden");
   e.preventDefault(); // stop default reload
 
   // 1️⃣ Collect General Info
   const product = {
-    productName: document.getElementById("productName").value.trim(),
+    name: document.getElementById("productName").value.trim(),
     brandName: document.getElementById("brandName").value.trim(),
     price: parseFloat(document.getElementById("price").value) || 0,
     stock: parseInt(document.getElementById("stock").value) || 0,
     category: document.getElementById("categoryDropdown").value,
-    image: document.getElementById("image").value.trim(),
+    images: document.getElementById("image").value.trim(),
     specifications: {}, // will hold dynamic categories
   };
 
@@ -67,6 +71,8 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
     }
   });
 
+  console.log(product);
+
   // 🔹 This is what you'll send to backend
 
   // // 3️⃣ Send to backend (example using fetch)
@@ -77,7 +83,10 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
   })
     .then((res) => res.json())
     .then((data) => {
-      alert("Product saved!");
+      window.location.reload();
+      //  form.classList.add("hidden");
+      //  loader.classList.remove("hidden");
+      // alert("Product saved!");
       console.log(product);
 
       // optionally reset form here
