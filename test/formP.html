@@ -70,28 +70,30 @@
                 </div>
 
 
-                <select id="categoryDropdown" name="category" class="w-full border p-2 rounded-lg" required>
+                <!-- <select id="categoryDropdown" name="category" class="w-full border p-2 rounded-lg" required>
                     <option value="">-- Select Category --</option>
-                </select>
+                </select> -->
 
-                <!-- Category
+                <!-- Category -->
                 <div class="flex flex-col">
                     <label for="category" class="mb-1 font-medium text-gray-700">Category</label>
                     <select id="category" name="category"
                         class="p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">Select category</option>
-                        <option value="hardware">Hardware</option>
-                        <option value="cpu">CPU</option>
-                        <option value="network">Network</option>
-                        <option value="gpu">GPU</option>
-                        <option value="display">Display</option>
-                        <option value="battery">Battery</option>
-                        <option value="software">Software</option>
-                        <option value="ports">Ports</option>
-                        <option value="audio">Audio</option>
-                        <option value="dimensions">Dimensions</option>
+                        <option value="mobile">Mobile</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="watch">Watch</option>
+                        <option value="tshirt">T-Shirt</option>
+                        <option value="wallet">Wallet</option>
+                        <option value="mouse">Mouse</option>
+                        <option value="headphones">Headphones</option>
+                        <option value="shoes">Shoes</option>
+                        <option value="backpack">Backpack</option>
+                        <option value="camera">Camera</option>
                     </select>
-                </div> -->
+                </div>
+
+
 
                 <!-- Product Image -->
                 <div class="flex flex-col">
@@ -102,35 +104,12 @@
             </div>
 
             <!-- Category Template -->
-            <script>
-                function createCategory(id, name) {
-                    return `
-                    
-            <div class="border p-4 mb-2 rounded-lg">
-              <div class="flex items-center justify-between mb-2">
-                <label class="flex items-center gap-2 font-semibold">
-                  <input type="checkbox" id="${id}Check" onclick="toggleCategory('${id}Fields')">
-                  ${name}
-                </label>
-                <button type="button" onclick="addKeyValue('${id}Fields')" class="text-green-500 bg-gray-200 rounded-md hover:bg-gray-300 px-3 font-bold text-2xl">+</button>
-              </div>
-              <div id="${id}Fields" class="space-y-2 hidden">
-                <div class="flex gap-4 items-center">
-                  <input type="text" placeholder="Key" class="p-2 border rounded w-1/2" name="${id}Key[]">
-                  <input type="text" placeholder="Value" class="p-2 border rounded w-1/2" name="${id}Value[]">
-                  <button type="button" onclick="removeBox(this)" class="text-red-500 bg-gray-200 rounded-md hover:bg-gray-300 px-3 font-bold text-2xl">×</button>
-                </div>
-              </div>
-            </div>
-          `;
-                }
-            </script>
 
             <!-- Categories -->
-            <div id="categoriesContainer"></div>
+            <div id="categoriesContainer" class=""></div>
 
             <!-- Submit Button -->
-            <div class="text-right">
+            <div class="text-right hidden" id="saveBTN">
                 <button type="submit" id="save-product"
                     class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                     Save Product
@@ -139,50 +118,6 @@
         </form>
     </div>
 
-    <script>
-        const categories = [
-            { id: "hardware", name: "Hardware" },
-            { id: "cpu", name: "CPU" },
-            { id: "network", name: "Network" },
-            { id: "gpu", name: "GPU" },
-            { id: "display", name: "Display" },
-            { id: "battery", name: "Battery" },
-            { id: "software", name: "Software" },
-            { id: "ports", name: "Ports" },
-            { id: "audio", name: "Audio" },
-            { id: "dimensions", name: "Dimensions" },
-            { id: "color", name: "Color" },
-        ];
-
-        const container = document.getElementById('categoriesContainer');
-        categories.forEach(cat => {
-            container.innerHTML += createCategory(cat.id, cat.name);
-        });
-
-        // Show/hide category fields
-        function toggleCategory(id) {
-            const el = document.getElementById(id);
-            el.classList.toggle('hidden');
-        }
-
-        // Add new key-value input pair
-        function addKeyValue(containerId) {
-            const container = document.getElementById(containerId);
-            const div = document.createElement('div');
-            div.className = 'flex gap-4 items-center';
-            div.innerHTML = `
-        <input type="text" placeholder="Key" class="p-2 border rounded w-1/2" name="${containerId}Key[]">
-        <input type="text" placeholder="Value" class="p-2 border rounded w-1/2" name="${containerId}Value[]">
-        <button type="button" onclick="removeBox(this)" class="text-red-600 font-bold text-xl">×</button>
-      `;
-            container.appendChild(div);
-        }
-
-        // Remove key-value input pair
-        function removeBox(button) {
-            button.parentElement.remove();
-        }
-    </script>
 
     <script>
         window.onload = function () {
@@ -190,7 +125,8 @@
         };
     </script>
 
-    <script src="product.js"></script>
+    <script src="productP.js"></script>
+    <script src="test.js"></script>
 </body>
 
 </html>
