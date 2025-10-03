@@ -114,13 +114,13 @@
                   <input type="checkbox" id="${id}Check" onclick="toggleCategory('${id}Fields')">
                   ${name}
                 </label>
-                <button type="button" onclick="addKeyValue('${id}Fields')" class="text-green-600 font-bold text-xl">+</button>
+                <button type="button" onclick="addKeyValue('${id}Fields')" class="text-green-500 bg-gray-200 rounded-md hover:bg-gray-300 px-3 font-bold text-2xl">+</button>
               </div>
               <div id="${id}Fields" class="space-y-2 hidden">
                 <div class="flex gap-4 items-center">
                   <input type="text" placeholder="Key" class="p-2 border rounded w-1/2" name="${id}Key[]">
                   <input type="text" placeholder="Value" class="p-2 border rounded w-1/2" name="${id}Value[]">
-                  <button type="button" onclick="removeBox(this)" class="text-red-600 font-bold text-xl">×</button>
+                  <button type="button" onclick="removeBox(this)" class="text-red-500 bg-gray-200 rounded-md hover:bg-gray-300 px-3 font-bold text-2xl">×</button>
                 </div>
               </div>
             </div>
