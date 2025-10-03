@@ -18,17 +18,19 @@
         Back
     </button>
 
- <!-- loader -->
-      <section id="loader" class="hidden">
+    <!-- loader -->
+    <section id="loader" class="hidden">
         <div class="flex items-center justify-center min-h-[300px]">
-          <div class="flex flex-col items-center space-y-4">
-            <!-- Spinner -->
-            <div class="w-[60px] h-[60px] border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-            <!-- Text -->
-            <p class="text-gray-600 font-medum text-2xl">Saving product.....</p>
-          </div>
+            <div class="flex flex-col items-center space-y-4">
+                <!-- Spinner -->
+                <div
+                    class="w-[60px] h-[60px] border-4 border-indigo-500 border-t-transparent rounded-full animate-spin">
+                </div>
+                <!-- Text -->
+                <p class="text-gray-600 font-medum text-2xl">Saving product.....</p>
+            </div>
         </div>
-      </section>
+    </section>
 
     <!-- product form start -->
     <div id="full-form" class="max-w-5xl mx-auto bg-white px-6 pt-2 pb-2 rounded shadow-md">
@@ -42,12 +44,12 @@
                 <!-- Product Name -->
                 <div class="flex flex-col">
                     <label for="productName" class="mb-1 font-medium text-gray-700">Product Name</label>
-                    <input type="text" id="productName" name="name" placeholder="Enter product name"
+                    <input type="text" id="productName" name="name" placeholder="Enter product name" required
                         class="p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
 
-                <!-- Product Name -->
+                <!-- brand Name -->
                 <div class="flex flex-col">
                     <label for="productName" class="mb-1 font-medium text-gray-700">Brand Name</label>
                     <input type="text" id="brandName" name="brandName" placeholder="Enter Brand name"
@@ -58,7 +60,7 @@
                 <!-- Price -->
                 <div class="flex flex-col">
                     <label for="price" class="mb-1 font-medium text-gray-700">Price</label>
-                    <input type="number" id="price" name="price" placeholder="Enter price"
+                    <input type="number" id="price" name="price" placeholder="Enter price" required
                         class="p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
@@ -96,7 +98,7 @@
                 <!-- Product Image -->
                 <div class="flex flex-col">
                     <label for="image" class="mb-1 font-medium text-gray-700">Product Image</label>
-                    <input type="text" placeholder="Enter image link" id="image" name="images" accept="image/*"
+                    <input type="text" placeholder="Enter image link" id="image" required name="images" accept="image/*"
                         class="p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
@@ -131,7 +133,8 @@
 
             <!-- Submit Button -->
             <div class="text-right">
-                <button type="submit" id="save-product" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                <button type="submit" id="save-product"
+                    class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                     Save Product
                 </button>
             </div>
