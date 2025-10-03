@@ -5,7 +5,7 @@ function createCategory(name) {
               <div class="flex items-center justify-between mb-2">
                 <label class="flex items-center gap-2 font-semibold">
                   <input type="checkbox" id="${name}Check" onclick="toggleCategory('${name}Fields')">
-                  ${name}
+                  <span class="text-xl"> ${name}</span>
                 </label>
                 <button type="button" onclick="addKeyValue('${name}Fields')" class="text-green-500 bg-gray-200 rounded-md hover:bg-gray-300 px-3 font-bold text-2xl">+</button>
               </div>
