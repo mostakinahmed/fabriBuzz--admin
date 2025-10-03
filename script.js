@@ -156,59 +156,59 @@ function toggleSidebar() {
   sidebar.classList.toggle("-translate-x-full");
 }
 
-// Add new product
-const addBtn = document.getElementById("addProductBtn");
-addBtn.addEventListener("click", async function (e) {
-  e.preventDefault();
-  const form = e.target.form;
+// // Add Product
+// const addBtn = document.getElementById("addProductBtn");
+// addBtn.addEventListener("click", async function (e) {
+//   e.preventDefault();
+//   const form = e.target.form;
 
-  //cat data
-  const response = await fetch("https://fabribuzz.onrender.com/api/category");
-  const allCatData = await response.json();
+//   //cat data
+//   const response = await fetch("https://fabribuzz.onrender.com/api/category");
+//   const allCatData = await response.json();
 
-  const data = {
-    pID: "NULL",
-    name: form.name.value,
-    price: form.price.value,
-    category: form.category.value,
-    description: form.description.value,
-    images: form.images.value,
-  };
+//   const data = {
+//     pID: "NULL",
+//     name: form.name.value,
+//     price: form.price.value,
+//     category: form.category.value,
+//     description: form.description.value,
+//     images: form.images.value,
+//   };
 
-  //replace category name with id
-  allCatData.forEach((category) => {
-    if (category.catName === data.category) {
-      data.category = category.catID;
-    }
-  });
+//   //replace category name with id
+//   allCatData.forEach((category) => {
+//     if (category.catName === data.category) {
+//       data.category = category.catID;
+//     }
+//   });
 
-  if (
-    data.name === "" ||
-    data.price === "" ||
-    data.category === "" ||
-    data.images === "" ||
-    data.description === ""
-  ) {
-    alert("Please fill in all fields");
-    return;
-  } else {
-    loadingForAddProduct.classList.remove("hidden");
-    //console.log("All fields are filled");
+//   if (
+//     data.name === "" ||
+//     data.price === "" ||
+//     data.category === "" ||
+//     data.images === "" ||
+//     data.description === ""
+//   ) {
+//     alert("Please fill in all fields");
+//     return;
+//   } else {
+//     loadingForAddProduct.classList.remove("hidden");
+//     //console.log("All fields are filled");
 
-    const response = await fetch("https://fabribuzz.onrender.com/api/product", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+//     const response = await fetch("https://fabribuzz.onrender.com/api/product", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(data),
+//     });
 
-    // await response.text();
-    await response.json();
-    //reset form and hide it
-    form.reset();
-    loadingForAddProduct.classList.add("hidden");
-    showSection("products");
-  }
-});
+//     // await response.text();
+//     await response.json();
+//     //reset form and hide it
+//     form.reset();
+//     loadingForAddProduct.classList.add("hidden");
+//     showSection("products");
+//   }
+// });
 
 //cancel button
 addProductCancel.addEventListener("click", (e) => {
