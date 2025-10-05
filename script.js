@@ -332,11 +332,11 @@ async function editFunction(event, productID) {
   const response = await fetch("https://fabribuzz.onrender.com/api/product");
   const products = await response.json();
   const product = products.find((p) => p._id === productID);
-  
+
   //all product data
   editForm.classList.remove("hidden");
   allProductTable.classList.add("hidden");
- // loadingForEdit.classList.add("hidden");
+  // loadingForEdit.classList.add("hidden");
   editProductForm.innerHTML = ""; //reset dashboard content
   editProductForm.innerHTML = `<input
                 type="text"
@@ -453,7 +453,7 @@ async function updateProductFunction(event, productID) {
       body: JSON.stringify(data),
     }
   );
- // loadingForEdit.classList.add("hidden");
+  // loadingForEdit.classList.add("hidden");
 
   fetchProducts();
   allProductTable.classList.remove("hidden");
