@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchCategories();
   fetchProducts();
   orderHomeData();
-  showData(card);
+  //showData(card);
 });
 
 //popup maintainer
@@ -327,16 +327,16 @@ async function deleteFunction(event, productID) {
 //Update Product
 async function editFunction(event, productID) {
   event.preventDefault(); // prevents reload
-  loadingForEdit.classList.remove("hidden");
+  //loadingForEdit.classList.remove("hidden");
   allProductTable.classList.add("hidden");
   const response = await fetch("https://fabribuzz.onrender.com/api/product");
   const products = await response.json();
   const product = products.find((p) => p._id === productID);
-
+  
   //all product data
   editForm.classList.remove("hidden");
   allProductTable.classList.add("hidden");
-  loadingForEdit.classList.add("hidden");
+ // loadingForEdit.classList.add("hidden");
   editProductForm.innerHTML = ""; //reset dashboard content
   editProductForm.innerHTML = `<input
                 type="text"
@@ -430,7 +430,7 @@ async function editFunction(event, productID) {
 //Edit Product Button
 async function updateProductFunction(event, productID) {
   event.preventDefault();
-  loadingForEdit.classList.remove("hidden");
+  //loadingForEdit.classList.remove("hidden");
   editForm.classList.add("hidden");
   const form = editProductForm;
   const data = {
@@ -453,7 +453,7 @@ async function updateProductFunction(event, productID) {
       body: JSON.stringify(data),
     }
   );
-  loadingForEdit.classList.add("hidden");
+ // loadingForEdit.classList.add("hidden");
 
   fetchProducts();
   allProductTable.classList.remove("hidden");
