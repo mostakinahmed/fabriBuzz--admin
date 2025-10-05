@@ -104,6 +104,7 @@ categoryDropdown.addEventListener("focus", async () => {
     const product = {
       name: document.getElementById("productName").value.trim(),
       brandName: document.getElementById("brandName").value.trim(),
+      description: document.getElementById("description").value.trim(),
       price: parseFloat(document.getElementById("price").value) || 0,
       stock: parseInt(document.getElementById("stock").value) || 0,
       category: catID.catID,
@@ -151,14 +152,6 @@ categoryDropdown.addEventListener("focus", async () => {
         window.location.reload();
         // form.classList.re("hidden");
         // loader.classList.add("hidden");
-        //alert("Product saved!");
-
-        // optionally reset form here
-        //  document.getElementById("productForm").reset();
-        // // // hide all dynamic spec sections
-        // catData.forEach((cat) =>
-        //   document.getElementById(cat + "Fields")?.classList.add("hidden")
-        // );
       })
       .catch((err) => console.error(err));
   });
